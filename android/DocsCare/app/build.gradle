@@ -67,6 +67,12 @@ dependencies {
     implementation 'com.android.support:customtabs:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
 
+    // scanner
+    implementation project(':scanlibrary')
+
+    // permission
+    implementation 'gun0912.ted:tedpermission:2.2.2'
+
     // naver
     implementation 'com.naver.nid:naveridlogin-android-sdk:4.2.5'
 

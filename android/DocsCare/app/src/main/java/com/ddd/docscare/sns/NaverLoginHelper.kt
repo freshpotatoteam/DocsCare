@@ -20,9 +20,6 @@ class NaverLoginHelper(private val activity: Activity) {
         loginModule = OAuthLogin.getInstance()
         loginModule.init(activity, NAVER_AUTH_CLIENT_ID, NAVER_AUTH_SECRET, activity.getString(R.string.app_name))
         loginHandler = NaverLoginHandler(loginHelper, loginModule)
-
-        var a = 1
-        a += 1
     }
 
     fun startOAuthLoginActivity() {

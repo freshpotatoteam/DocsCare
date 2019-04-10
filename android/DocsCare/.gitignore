@@ -12,4 +12,7 @@
 .externalNativeBuild
 ./idea
 .idea
+./obj
+obj
+
 

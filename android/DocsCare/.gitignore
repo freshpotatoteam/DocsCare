@@ -14,5 +14,6 @@
 .idea
 ./obj
 obj
+google-services.json
 
 

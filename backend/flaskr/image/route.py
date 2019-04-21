@@ -2,33 +2,33 @@ from flask_restplus import Namespace, Resource, fields
 
 api = Namespace('image', description='이미지 관련 api')
 
-cat = api.model('Cat', {
-    'id': fields.String(required=True, description='The cat identifier'),
-    'name': fields.String(required=True, description='The cat name'),
+image = api.model('Image', {
+    'id': fields.String(required=True, description='Image id'),
+    'name': fields.String(required=True, description='The image name'),
 })
 
-CATS = [
+Images = [
     {'id': 'felix', 'name': 'Felix'},
 ]
 
 @api.route('/')
 class CatList(Resource):
-    @api.doc('list_cats')
-    @api.marshal_list_with(cat)
+    @api.doc(responses={403: 'Not Authorized'})
+    @api.marshal_list_with(image)
     def get(self):
         '''List all cats'''
-        return CATS
+        return Images
 
 
 @api.route('/<id>')
-@api.param('id', 'The cat identifier')
+@api.param('id', 'The image identifier')
 @api.response(404, 'Cat not found')
 class Cat(Resource):
     @api.doc('get_cat')
-    @api.marshal_with(cat)
+    @api.marshal_with(image)
     def get(self, id):
-        '''Fetch a cat given its identifier'''
-        for cat in CATS:
-            if cat['id'] == id:
-                return cat
+        '''Fetch a image given its identifier'''
+        for image in Images:
+            if image['id'] == id:
+                return image
         api.abort(404)

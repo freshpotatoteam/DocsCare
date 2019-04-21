@@ -6,7 +6,8 @@ from .user.route import api as user
 api = Api(
     version='1.0',
     title='Docs Care API',
-    description='Docs Care API입니다.'
+    description='Docs Care API입니다.',
+    doc="/swagger-ui"
 )
 
 api.add_namespace(image)

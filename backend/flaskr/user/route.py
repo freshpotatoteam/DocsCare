@@ -12,17 +12,14 @@ class User(Resource):
     @api.expect(insert_user_data)
     def post(self, user_id):
         '''create user by user_id'''
-        try:
-            req = request.get_json(force=True)
-            user_document = {
-                'user_id': user_id,
-                'nickname': req['nickname'],
-                'profile_image_path': req['profile_image_path'],
-                'thumbnail_image_path': req['thumbnail_image_path'],
-                'categories': []
-            }
-        except Exception as ex:
-            abort(400, "입력데이터에 오류가 있습니다.{0}".format(ex))
+        req = request.get_json(force=True)
+        user_document = {
+            'user_id': user_id,
+            'nickname': req['nickname'],
+            'profile_image_path': req['profile_image_path'],
+            'thumbnail_image_path': req['thumbnail_image_path'],
+            'categories': []
+        }
 
         for category in mongo.db.defaultCategories.find({}):
             category_document = {

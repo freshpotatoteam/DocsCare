@@ -1,5 +1,6 @@
 from flask import request, abort
 from flask_restplus import Resource
+
 from backend.app import mongo
 from backend.flaskr.user.swagger import api, user, insert_user_data
 
@@ -23,13 +24,16 @@ class User(Resource):
 
         for category in mongo.db.defaultCategories.find({}):
             category_document = {
-                "category_name": category['category_name'],
-                "category_included_image": []
+                'category_name': category['category_name'],
+                'category_included_image': []
             }
 
             user_document['categories'].append(category_document)
 
-        mongo.db.users.insert(user_document)
+        result = mongo.db.users.insert_one(user_document)
+
+        if result.inserted_id is None:
+            abort(500, 'fail user insert')
 
         return user_document, 201
 
@@ -37,6 +41,8 @@ class User(Resource):
     def delete(self, user_id):
         '''delete user by user_id'''
         result = mongo.db.users.delete_one({'user_id': user_id})
+
         if result.deleted_count == 0:
             abort(400, 'user not found')
+
         return 'Deleted User', 204

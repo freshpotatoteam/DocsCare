@@ -8,7 +8,7 @@ import backend.settings as settings
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = settings.MONGO_DB
-app.config["MONGO_URI"] = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
+app.config['MONGO_URI'] = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
     settings.MONGO_USER,
     settings.MONGO_PASS,
     settings.MONGO_HOST,
@@ -33,11 +33,11 @@ def not_found(e):
     return '', 404
 
 
-if __name__ != "__main__":
-    gunicorn_logger = logging.getLogger("gunicorn.error")
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     initialize_app(app)
-    app.run(host="0.0.0.0", debug=True, port=5005)
+    app.run(host='0.0.0.0', debug=True, port=5005)

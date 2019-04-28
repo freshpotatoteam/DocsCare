@@ -9,3 +9,7 @@ MONGO_PORT = 27017
 MONGO_DB = 'docscare'
 MONGO_USER = 'docscare'
 MONGO_PASS = 'docscare'
+
+# S3
+S3_BUCKET = 'docscare'
+S3_LOCATION = 'https://s3.ap-northeast-2.amazonaws.com/{}/'.format(S3_BUCKET)

@@ -3,3 +3,4 @@ Flask-Zipkin
 Flask-PyMongo
 gunicorn
 flask-restplus
+boto3

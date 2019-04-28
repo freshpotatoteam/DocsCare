@@ -1,6 +1,6 @@
 from flask_restplus import Namespace, Resource, fields
 
-api = Namespace('image', description='이미지 관련 api')
+api = Namespace('images', description='이미지 관련 api')
 
 image = api.model('Image', {
     'id': fields.String(required=True, description='Image id'),

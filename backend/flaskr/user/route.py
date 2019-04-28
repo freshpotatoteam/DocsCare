@@ -1,44 +1,45 @@
-from flask_restplus import Namespace, Resource, fields
+from flask import request, abort
+from flask_restplus import Resource
 from backend.app import mongo
+from backend.flaskr.user.swagger_models import api, user, insert_user_data
 
 
-api = Namespace('user', description='회원 관련 api')
-
-userCategory = api.model("category", {
-    'category_name': fields.String(required=True, description='category_name')
-})
-
-User = [
-    {'id': 'felix', 'name': 'Felix'},
-]
-
-user = api.model('User', {
-    '_id': fields.String(required=True, description='mongo objectId'),
-    'use_id': fields.String(required=True, description='The user id'),
-    'nickname': fields.String(required=True, description='nickname'),
-    'profile_image_path': fields.String(required=True, description='profile_image_path'),
-    'thumbnail_image_path': fields.String(required=True, description='thumbnail_image_path'),
-    'category': fields.List(required=True, description='user category list', cls_or_instance=fields.String)
-})
-
-@api.route('/<userId>')
-@api.param('userId', 'The user identifier')
-class Cat(Resource):
+@api.route('/<user_id>')
+@api.param('user_id', 'The user identifier')
+class User(Resource):
     @api.doc('post_user')
-    # @api.marshal_with(user, code=201, description='Object created')
-    def post(self, userId):
-        '''create user by userId'''
-        for user in User:
-            if user['id'] != id:
-                print(mongo.db.defaultCategories.find({'category_name': '커리어'}))
-                return mongo.db.defaultCategories.find({'category_name': '커리어'})[0]['category_name']
+    @api.marshal_with(user, code=201, description='Object created')
+    @api.expect(insert_user_data)
+    def post(self, user_id):
+        '''create user by user_id'''
+        try:
+            req = request.get_json(force=True)
+            user_document = {
+                'user_id': user_id,
+                'nickname': req['nickname'],
+                'profile_image_path': req['profile_image_path'],
+                'thumbnail_image_path': req['thumbnail_image_path'],
+                'categories': []
+            }
+        except Exception as ex:
+            abort(400, "입력데이터에 오류가 있습니다.{0}".format(ex))
+
+        for category in mongo.db.defaultCategories.find({}):
+            category_document = {
+                "category_name": category['category_name'],
+                "category_included_image": []
+            }
+
+            user_document['categories'].append(category_document)
+
+        mongo.db.users.insert(user_document)
+
+        return user_document, 201
 
     @api.doc('delete_user')
-    @api.marshal_with(user)
-    @api.response(404, 'user not found')
-    def delete(self, userId):
-        '''delete user by userId'''
-        for user in User:
-            if user['id'] == id:
-                return user
-        api.abort(404)
+    def delete(self, user_id):
+        '''delete user by user_id'''
+        result = mongo.db.users.delete_one({'user_id': user_id})
+        if result.deleted_count == 0:
+            abort(400, 'user not found')
+        return 'Deleted User', 204

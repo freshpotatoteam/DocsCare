@@ -8,7 +8,7 @@ import backend.settings as settings
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = settings.MONGO_DB
-app.config["MONGO_URI"] = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true'.format(
+app.config["MONGO_URI"] = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
     settings.MONGO_USER,
     settings.MONGO_PASS,
     settings.MONGO_HOST,

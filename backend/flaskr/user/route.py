@@ -1,7 +1,7 @@
 from flask import request, abort
 from flask_restplus import Resource
 from backend.app import mongo
-from backend.flaskr.user.swagger_models import api, user, insert_user_data
+from backend.flaskr.user.swagger import api, user, insert_user_data
 
 
 @api.route('/<user_id>')

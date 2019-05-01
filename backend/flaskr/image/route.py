@@ -41,7 +41,7 @@ class ImagePost(Resource):
 @api.route('/<user_id>/<image_id>')
 @api.param('user_id', 'The user identifier')
 @api.param('image_id', 'The image identifier')
-class ImageWithImageId(Resource):
+class Image(Resource):
     @api.doc('get_image_byImageId')
     def get(self, user_id, image_id):
         '''get single image by user_id and image_id'''

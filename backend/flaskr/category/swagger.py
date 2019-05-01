@@ -1,12 +1,12 @@
 from flask_restplus import Namespace, fields
 
-api = Namespace('images', description='이미지 관련 api')
+api = Namespace('categories', description='이미지 관련 api')
 
-image = api.model('Image', {
-    'id': fields.String(required=True, description='Image id'),
-    'name': fields.String(required=True, description='The image name'),
+category = api.model('Category', {
+    'id': fields.String(required=True, description='category id'),
+    'name': fields.String(required=True, description='The category name'),
 })
 
-Images = [
+Categories = [
     {'id': 'felix', 'name': 'Felix'},
 ]

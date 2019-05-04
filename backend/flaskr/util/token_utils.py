@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import request
+from flask import request, abort
 
 import backend.settings as settings
 
@@ -14,10 +14,10 @@ def token_required(f):
             token = request.headers['X-API-KEY']
 
         if not token:
-            return 'Token is missing.', 401
+            return abort(401, 'Token is missing.')
 
         if token != settings.API_KEY:
-            return 'Your token is wrong.', 401
+            return abort(401, 'Your token is wrong.')
 
         print('Token: {}'.format(token))
         return f(*args, **kwargs)

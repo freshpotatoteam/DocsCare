@@ -14,7 +14,7 @@ class Category(Resource):
 
     with_category_name_parser = api.parser()
     with_category_name_parser.add_argument('user_id', help='The user identifier', required=True)
-    with_category_name_parser.add_argument('category_name', help='Category Name To add (category_id auto create)',
+    with_category_name_parser.add_argument('category_name', help='Category Name To add',
                                            required=True)
 
     @api.doc('get_user_category_list')
@@ -25,12 +25,13 @@ class Category(Resource):
         result = docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})
 
         if result is None:
-            abort(400, 'User categories not found')
+            abort(400, 'User Categories Not Found')
 
         return result['categories']
 
     @api.doc('add_user_category_list')
     @api.expect(with_category_name_parser, validate=True)
+    @api.response(200, 'Success Category Add')
     def put(self):
         '''add category by user_id'''
 
@@ -84,6 +85,7 @@ class CategoryNameUpdate(Resource):
 
     @api.doc('update_user_category_name')
     @api.expect(with_category_name_parser, validate=True)
+    @api.response(200, 'Success Category Name Update')
     def put(self, category_id):
         '''update category name by user_id and category name text'''
         result = None

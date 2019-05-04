@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import backend.settings as settings
 from backend.app import docscare_db
 from backend.flaskr.image.service import *
-from backend.flaskr.image.swagger import api, user_image
+from backend.flaskr.image.swagger import api, user_image, insert_user_image
 from backend.flaskr.util.token_utils import token_required
 
 
@@ -34,8 +34,8 @@ class Image(Resource):
 
         return result
 
-    @api.doc('post_image')
-    @api.expect(default_parser, validate=True)
+    @api.doc('post_image', body=insert_user_image, parser=default_parser)
+    @api.marshal_with(user_image, code=201, description='Success User Image Insert')
     @token_required
     def post(self):
         '''create image by user_id'''

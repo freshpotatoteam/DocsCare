@@ -18,9 +18,11 @@ mongo_url = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=s
 mongo = db.init_app(mongo_url)
 docscare_db = mongo['docscare']
 
+
 def configure_app(app: Flask) -> None:
     app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.SWAGGER_UI_DOC_EXPANSION
     app.config['RESTPLUS_VALIDATE'] = settings.RESTPLUS_VALIDATE
+    app.config['RESTPLUS_MASK_SWAGGER'] = False
 
 
 def initialize_app(app: Flask) -> None:

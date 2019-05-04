@@ -40,29 +40,34 @@ class Category(Resource):
             abort(400, 'User categories not found')
 
         last_key_index = int(
-            user_category_by_user_id['categories'][-1][
+            docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})['categories'][-1][
                 'category_id'][len(category_prefix):]) + 1
 
-        result = docscare_db.userCategories.update_one({
-            'user_id': request.args.get('user_id')
-        }, {
-            '$push': {'categories': {
-                'category_name': request.args.get('category_name'),
-                'category_id': category_prefix + str(last_key_index)}
-            }
-        })
-
-        if result.modified_count == 0:
-            abort(500, 'fail category add')
+        try:
+            docscare_db.userCategories.update_one({
+                'user_id': request.args.get('user_id')
+            }, {
+                '$push': {'categories': {
+                    'category_name': request.args.get('category_name'),
+                    'category_id': category_prefix + str(last_key_index)}
+                }
+            })
+        except Exception as e:
+            abort(500, 'Failed category add, {}'.format(e))
 
         return 'Success category add', 200
 
-    @api.expect(default_parser, validate=True)
     @api.doc('delete_user_category')
+    @api.expect(default_parser, validate=True)
     @api.response(204, 'Deleted User Category')
     def delete(self):
         '''delete user category by user_id'''
-        result = docscare_db.userCategories.delete_one({'user_id': request.args.get('user_id')})
+        result = None
+
+        try:
+            result = docscare_db.userCategories.delete_one({'user_id': request.args.get('user_id')})
+        except Exception as e:
+            abort(500, 'Failed deleted category, {}'.format(e))
 
         if result.deleted_count == 0:
             abort(400, 'User categories not found')
@@ -77,23 +82,25 @@ class CategoryNameUpdate(Resource):
     with_category_name_parser.add_argument('user_id', help='The user identifier', required=True)
     with_category_name_parser.add_argument('category_name', help='Category Name To Update ', required=True)
 
-    @api.expect(with_category_name_parser, validate=True)
     @api.doc('update_user_category_name')
+    @api.expect(with_category_name_parser, validate=True)
     def put(self, category_id):
         '''update category name by user_id and category name text'''
+        result = None
 
-        result = docscare_db.userCategories.update_one({
-            'user_id': request.args.get('user_id'),
-            'categories': {'$elemMatch': {'category_id': category_id}}
-        }, {
-            '$set': {'categories.$.category_name': request.args.get('category_name')}
-        })
+        try:
+            result = docscare_db.userCategories.update_one({
+                'user_id': request.args.get('user_id'),
+                'categories': {'$elemMatch': {'category_id': category_id}}
+            }, {
+                '$set': {'categories.$.category_name': request.args.get('category_name')}
+            })
+        except Exception as e:
+            abort(500, 'Failed category name update, {}'.format(e))
 
         if result.matched_count == 0:
             abort(400, 'User categories not found')
         elif result.matched_count != 0 and result.modified_count == 0:
             abort(400, 'Already equal category name')
-        else:
-            abort(500, 'Fail category name update')
 
         return 'Success category name update', 200

@@ -7,16 +7,16 @@ import backend.flaskr as route
 import backend.settings as settings
 
 app = Flask(__name__)
-app.config['MONGO_DBNAME'] = settings.MONGO_DB
-app.config['MONGO_URI'] = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
+
+mongo_url = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
     settings.MONGO_USER,
     settings.MONGO_PASS,
     settings.MONGO_HOST,
     settings.MONGO_PORT,
     settings.MONGO_DB)
 
-mongo = db.init_app(app)
-
+mongo = db.init_app(mongo_url)
+docscare_db = mongo['docscare']
 
 def configure_app(app: Flask) -> None:
     app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.SWAGGER_UI_DOC_EXPANSION

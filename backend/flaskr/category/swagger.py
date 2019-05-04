@@ -1,6 +1,6 @@
 from flask_restplus import Namespace, fields
 
-api = Namespace('categories', description='이미지 관련 api')
+api = Namespace('categories', description='유저 카테고리 관련 api')
 
 category = api.model('Category', {
     'id': fields.String(required=True, description='category id'),

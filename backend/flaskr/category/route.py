@@ -38,7 +38,7 @@ class Category(Resource):
         user_category_by_user_id = docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})
 
         if user_category_by_user_id is None:
-            abort(400, 'User categories not found')
+            abort(400, 'User Categories Not Found')
 
         last_key_index = int(
             docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})['categories'][-1][
@@ -79,7 +79,7 @@ class Category(Resource):
 
                 if result.deleted_count == 0:
                     session.abort_transaction()
-                    abort(400, 'User categories not found')
+                    abort(400, 'User Categories Not Found')
 
         return 'Deleted User Category', 204
 
@@ -113,7 +113,7 @@ class CategoryNameUpdate(Resource):
 
                 if result.matched_count == 0:
                     session.abort_transaction()
-                    abort(400, 'User categories not found')
+                    abort(400, 'User Categories Not Found')
                 elif result.matched_count != 0 and result.modified_count == 0:
                     session.abort_transaction()
                     abort(400, 'Already equal category name')

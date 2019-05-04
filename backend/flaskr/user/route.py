@@ -65,4 +65,4 @@ class User(Resource):
                     session.abort_transaction()
                     abort(400, 'User not found')
 
-        return 'Deleted User', 200
+        return 'Deleted user', 200

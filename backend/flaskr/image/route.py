@@ -40,7 +40,7 @@ class ImagePost(Resource):
             output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
             print(output)
 
-        # docscare_db.image.insert()
+        # docscare_db.userImages.insert()
         return 'asd'
 
 
@@ -54,7 +54,7 @@ class Image(Resource):
     @api.doc('get_image_byImageId')
     def get(self, image_id):
         '''get single image by user_id and image_id'''
-        result = docscare_db.image.find_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
+        result = docscare_db.userImages.find_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
 
         if result is None:
             abort(400, 'image not found')
@@ -65,7 +65,7 @@ class Image(Resource):
     @api.doc('delete_image_byImageId')
     def delete(self, image_id):
         '''delete image by user_id and image_id'''
-        result = docscare_db.image.delete_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
+        result = docscare_db.userImages.delete_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
 
         if result.deleted_count == 0:
             abort(400, 'image not found')
@@ -84,7 +84,7 @@ class ImageWithCategory(Resource):
     @api.marshal_with(image)
     def get(self, category_id):
         '''get image list by by user_id and category_id'''
-        result = docscare_db.image.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
+        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
 
         if result is None:
             abort(400, 'image not found')
@@ -103,7 +103,7 @@ class ImageCategoryUpdate(Resource):
     @api.marshal_with(image)
     def put(self, image_id, category_id):
         '''get image list by by user_id and category_id'''
-        result = docscare_db.image.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
+        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
 
         if result.modified_count == 0:
             abort(400, 'image not found')

@@ -1,3 +1,4 @@
+from bson.objectid import ObjectId
 from flask import request, abort
 from flask_restplus import Resource
 from werkzeug.utils import secure_filename
@@ -5,26 +6,37 @@ from werkzeug.utils import secure_filename
 import backend.settings as settings
 from backend.app import docscare_db
 from backend.flaskr.image.service import *
-from backend.flaskr.image.swagger import api, image
+from backend.flaskr.image.swagger import api, user_image
+from backend.flaskr.util.token_utils import token_required
 
 
 @api.route('')
-class ImagePost(Resource):
+class Image(Resource):
     default_parser = api.parser()
     default_parser.add_argument('user_id', help='The user identifier', required=True)
 
     with_content_parser = api.parser()
     with_content_parser.add_argument('user_id', help='The user identifier', required=True)
-    with_content_parser.add_argument('content', help='image content text', required=True)
+    with_content_parser.add_argument('text', help='image content text', required=True)
 
+    @api.doc('get_user_image_list_by_image_content_text')
     @api.expect(with_content_parser, validate=True)
-    @api.doc('get_image_byText')
+    @api.marshal_list_with(user_image)
+    @token_required
     def get(self):
-        '''get image by user_id and image content text'''
-        return 'asd'
+        '''get user image list by user_id and image content text'''
+        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'image_text': {
+            '$regex': request.args.get('text')
+        }})
 
-    @api.expect(default_parser, validate=True)
+        if result is None:
+            abort(400, 'Image Not Found')
+
+        return result
+
     @api.doc('post_image')
+    @api.expect(default_parser, validate=True)
+    @token_required
     def post(self):
         '''create image by user_id'''
         if 'docs_image' not in request.files:
@@ -46,66 +58,71 @@ class ImagePost(Resource):
 
 @api.route('/<image_id>')
 @api.param('image_id', 'The image identifier')
-class Image(Resource):
-    parser = api.parser()
-    parser.add_argument('user_id', help='The user identifier', required=True)
-
-    @api.expect(parser, validate=True)
-    @api.doc('get_image_byImageId')
+class ImageWithImageId(Resource):
+    @api.doc('get_user_image')
+    @api.marshal_with(user_image)
+    @token_required
     def get(self, image_id):
-        '''get single image by user_id and image_id'''
-        result = docscare_db.userImages.find_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
+        '''get single image by image_id'''
+        result = docscare_db.userImages.find_one({'_id': ObjectId(image_id)})
 
         if result is None:
-            abort(400, 'image not found')
+            abort(400, 'Image Not Found')
 
         return 'asd', 200
 
-    @api.expect(parser, validate=True)
-    @api.doc('delete_image_byImageId')
+    @api.doc('delete_user_image')
+    @api.response(200, 'Deleted User')
+    @token_required
     def delete(self, image_id):
-        '''delete image by user_id and image_id'''
-        result = docscare_db.userImages.delete_one({'user_id': request.args.get('user_id'), 'image_id': image_id})
+        '''delete image by image_id'''
+        result = docscare_db.userImages.delete_one({'_id': ObjectId(image_id)})
 
         if result.deleted_count == 0:
-            abort(400, 'image not found')
+            abort(400, 'Image Not Found')
 
-        return 'Deleted User', 204
+        return 'Deleted User', 200
 
 
 @api.route('/<category_id>')
 @api.param('category_id', 'The category identifier')
-class ImageWithCategory(Resource):
+class ImageWithCategoryId(Resource):
     default_parser = api.parser()
     default_parser.add_argument('user_id', help='The user identifier', required=True)
 
+    @api.doc('get_user_image_list_by_category_id')
     @api.expect(default_parser, validate=True)
-    @api.doc('get_image_list_byCategory')
-    @api.marshal_with(image)
+    @api.marshal_list_with(user_image)
+    @token_required
     def get(self, category_id):
-        '''get image list by by user_id and category_id'''
-        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
+        '''get user image list by by user_id and category_id'''
+        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'category_id': category_id})
 
         if result is None:
-            abort(400, 'image not found')
+            abort(400, 'Image Not Found')
 
-        return 'asd', 200
+        return result
 
 
 @api.route('/<image_id>/<category_id>')
 @api.param('image_id', 'The image identifier')
 @api.param('category_id', 'Category id to modify')
-class ImageCategoryUpdate(Resource):
+class ImageWithImageIdAndCategoryId(Resource):
     default_parser = api.parser()
     default_parser.add_argument('user_id', help='The user identifier', required=True)
 
-    @api.doc('update_image_category_byImageId')
-    @api.marshal_with(image)
+    @api.doc('update_user_image_category')
+    @api.marshal_with(user_image)
+    @token_required
     def put(self, image_id, category_id):
-        '''get image list by by user_id and category_id'''
-        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'image_category': category_id})
+        '''update user image category by image_id and category_id'''
+        result = docscare_db.userImages.update_one({
+            '_id': ObjectId(image_id)
+        }, {
+            '$set': {'category_id': category_id}
+        })
 
-        if result.modified_count == 0:
-            abort(400, 'image not found')
+        if result.matched_count == 0:
+            abort(400, 'Image Not Found')
 
-        return 'asd', 200
+        return 'Updated User Image Category', 200

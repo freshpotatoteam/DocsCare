@@ -3,6 +3,7 @@ from flask_restplus import Resource
 
 from backend.app import mongo, docscare_db
 from backend.flaskr.category.swagger import api, user_category_item
+from backend.flaskr.util.token_utils import token_required
 
 category_prefix = 'C'
 
@@ -19,7 +20,8 @@ class Category(Resource):
 
     @api.doc('get_user_category_list')
     @api.expect(default_parser, validate=True)
-    @api.marshal_with([user_category_item])
+    @api.marshal_list_with(user_category_item)
+    @token_required
     def get(self):
         '''get user category list by user_id'''
         result = docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})
@@ -31,7 +33,8 @@ class Category(Resource):
 
     @api.doc('add_user_category_in_user_category_list')
     @api.expect(with_category_name_parser, validate=True)
-    @api.response(200, 'Success Category Add')
+    @api.response(200, 'Added Category In User Category List')
+    @token_required
     def put(self):
         '''add user category in user category list by user_id'''
 
@@ -60,12 +63,12 @@ class Category(Resource):
                     session.abort_transaction()
                     abort(500, 'Failed category add, {}'.format(e))
 
-        return 'Success category add in user category list', 200
+        return 'Added Category In User Category List', 200
 
 
 @api.route('/<category_id>')
 @api.param('category_id', 'The category identifier')
-class CategoryNameUpdate(Resource):
+class CategoryWithCategoryId(Resource):
     default_parser = api.parser()
     default_parser.add_argument('user_id', help='The user identifier', required=True)
 
@@ -75,7 +78,8 @@ class CategoryNameUpdate(Resource):
 
     @api.doc('update_user_category_name_in_user_category_list')
     @api.expect(with_category_name_parser, validate=True)
-    @api.response(200, 'Success Category Name Update')
+    @api.response(200, 'Updated Category Name In User Category List')
+    @token_required
     def put(self, category_id):
         '''update user category name in user category list by user_id and category name text'''
         result = None
@@ -100,11 +104,12 @@ class CategoryNameUpdate(Resource):
                     session.abort_transaction()
                     abort(400, 'Already equal category name')
 
-        return 'Success category name update in user category list', 200
+        return 'Updated Category Name In User Category List', 200
 
     @api.doc('delete_user_category_in_user_category_list')
     @api.expect(default_parser, validate=True)
-    @api.response(204, 'Deleted User Category')
+    @api.response(204, 'Deleted User Category In User Category List')
+    @token_required
     def delete(self, category_id):
         '''delete user category in user category list by user_id'''
         result = None
@@ -133,4 +138,4 @@ class CategoryNameUpdate(Resource):
                     session.abort_transaction()
                     abort(400, 'Category Id Not Found')
 
-        return 'Deleted user category in user category list', 204
+        return 'Deleted User Category In User Category List', 204

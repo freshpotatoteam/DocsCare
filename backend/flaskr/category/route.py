@@ -1,7 +1,7 @@
 from flask import request, abort
 from flask_restplus import Resource
 
-from backend.app import docscare_db
+from backend.app import mongo, docscare_db
 from backend.flaskr.category.swagger import api, user_category_item
 
 category_prefix = 'C'
@@ -44,17 +44,21 @@ class Category(Resource):
             docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})['categories'][-1][
                 'category_id'][len(category_prefix):]) + 1
 
-        try:
-            docscare_db.userCategories.update_one({
-                'user_id': request.args.get('user_id')
-            }, {
-                '$push': {'categories': {
-                    'category_name': request.args.get('category_name'),
-                    'category_id': category_prefix + str(last_key_index)}
-                }
-            })
-        except Exception as e:
-            abort(500, 'Failed category add, {}'.format(e))
+        with mongo.start_session() as session:
+            with session.start_transaction():
+                try:
+                    docscare_db.userCategories.update_one({
+                        'user_id': request.args.get('user_id')
+                    }, {
+                        '$push': {'categories': {
+                            'category_name': request.args.get('category_name'),
+                            'category_id': category_prefix + str(last_key_index)}
+                        }
+                    }, session=session)
+                    # Todo userImages Collection 카테고리 일괄 변경
+                except Exception as e:
+                    session.abort_transaction()
+                    abort(500, 'Failed category add, {}'.format(e))
 
         return 'Success category add', 200
 
@@ -63,15 +67,19 @@ class Category(Resource):
     @api.response(204, 'Deleted User Category')
     def delete(self):
         '''delete user category by user_id'''
-        result = None
+        with mongo.start_session() as session:
+            with session.start_transaction():
+                result = None
+                try:
+                    docscare_db.userCategories.delete_one({'user_id': request.args.get('user_id')}, session=session)
+                    # Todo userImages Collection 해당 images들 No Category로 변경
+                except Exception as e:
+                    session.abort_transaction()
+                    abort(500, 'Failed delete user category, {}'.format(e))
 
-        try:
-            result = docscare_db.userCategories.delete_one({'user_id': request.args.get('user_id')})
-        except Exception as e:
-            abort(500, 'Failed deleted category, {}'.format(e))
-
-        if result.deleted_count == 0:
-            abort(400, 'User categories not found')
+                if result.deleted_count == 0:
+                    session.abort_transaction()
+                    abort(400, 'User categories not found')
 
         return 'Deleted User Category', 204
 
@@ -90,19 +98,24 @@ class CategoryNameUpdate(Resource):
         '''update category name by user_id and category name text'''
         result = None
 
-        try:
-            result = docscare_db.userCategories.update_one({
-                'user_id': request.args.get('user_id'),
-                'categories': {'$elemMatch': {'category_id': category_id}}
-            }, {
-                '$set': {'categories.$.category_name': request.args.get('category_name')}
-            })
-        except Exception as e:
-            abort(500, 'Failed category name update, {}'.format(e))
+        with mongo.start_session() as session:
+            with session.start_transaction():
+                try:
+                    result = docscare_db.userCategories.update_one({
+                        'user_id': request.args.get('user_id'),
+                        'categories': {'$elemMatch': {'category_id': category_id}}
+                    }, {
+                        '$set': {'categories.$.category_name': request.args.get('category_name')}
+                    }, session=session)
+                    # Todo userImages Collection 해당 images들 Category name 변경
+                except Exception as e:
+                    abort(500, 'Failed category name update, {}'.format(e))
 
-        if result.matched_count == 0:
-            abort(400, 'User categories not found')
-        elif result.matched_count != 0 and result.modified_count == 0:
-            abort(400, 'Already equal category name')
+                if result.matched_count == 0:
+                    session.abort_transaction()
+                    abort(400, 'User categories not found')
+                elif result.matched_count != 0 and result.modified_count == 0:
+                    session.abort_transaction()
+                    abort(400, 'Already equal category name')
 
         return 'Success category name update', 200

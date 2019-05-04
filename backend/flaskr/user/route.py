@@ -21,7 +21,6 @@ class User(Resource):
             'nickname': req['nickname'],
             'profile_image_path': req['profile_image_path'],
             'thumbnail_image_path': req['thumbnail_image_path'],
-            'categories': []
         }
 
         user_categories_document = {
@@ -30,10 +29,6 @@ class User(Resource):
         }
 
         for category in docscare_db.defaultCategories.find({}):
-            user_document['categories'].append({
-                'category_name': category['category_name'],
-                'category_included_image': []
-            })
             user_categories_document['categories'].append({
                 'category_name': category['category_name'],
                 'category_id': category['category_id'],
@@ -41,13 +36,12 @@ class User(Resource):
 
         with mongo.start_session() as session:
             with session.start_transaction():
-                user_insert_result = docscare_db.users.insert_one(user_document, session=session)
-                user_categories_insert_result = docscare_db.userCategories.insert_one(user_categories_document,
-                                                                                      session=session)
-
-            if user_insert_result.inserted_id is None or user_categories_insert_result.inserted_id is None:
-                session.abort_transaction()
-                abort(500, 'Fail user insert')
+                try:
+                    docscare_db.users.insert_one(user_document, session=session)
+                    docscare_db.userCategories.insert_one(user_categories_document, session=session)
+                except Exception as e:
+                    session.abort_transaction()
+                    abort(500, 'Failed user insert, {}'.format(e))
 
         return user_document, 201
 
@@ -56,9 +50,19 @@ class User(Resource):
     @token_required
     def delete(self, user_id):
         '''delete user by user_id'''
-        result = docscare_db.users.delete_one({'user_id': user_id})
+        result = None
 
-        if result.deleted_count == 0:
-            abort(400, 'User not found')
+        with mongo.start_session() as session:
+            with session.start_transaction():
+                try:
+                    result = docscare_db.users.delete_one({'user_id': user_id})
+                    # Todo userImages, userCategories 일괄 삭제
+                except Exception as e:
+                    session.abort_transaction()
+                    abort(500, 'Failed user delete, {}'.format(e))
+
+                if result.deleted_count == 0:
+                    session.abort_transaction()
+                    abort(400, 'User not found')
 
         return 'Deleted User', 200

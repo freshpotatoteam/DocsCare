@@ -13,3 +13,5 @@ MONGO_PASS = 'docscare'
 # S3
 S3_BUCKET = 'docscare'
 S3_LOCATION = 'https://s3.ap-northeast-2.amazonaws.com/{}/'.format(S3_BUCKET)
+
+API_KEY = 'c30d6e11-67cc-4643-8e20-b2cdff2799ef'

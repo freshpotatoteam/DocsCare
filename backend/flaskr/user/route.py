@@ -2,15 +2,15 @@ from flask import request, abort
 from flask_restplus import Resource
 
 from backend.app import mongo, docscare_db
-from backend.flaskr.user.swagger import api, user, insert_user_data
+from backend.flaskr.user.swagger import api, user, insert_user
 
 
 @api.route('/<user_id>')
 @api.param('user_id', 'The user identifier')
 class User(Resource):
     @api.doc('post_user')
-    @api.marshal_with(user, code=201, description='Object created')
-    @api.expect(insert_user_data)
+    @api.expect(insert_user)
+    @api.marshal_with(user, code=201, description='Success user insert')
     def post(self, user_id):
         '''create user by user_id'''
         req = request.get_json(force=True)
@@ -45,16 +45,17 @@ class User(Resource):
 
             if user_insert_result.inserted_id is None or user_categories_insert_result.inserted_id is None:
                 session.abort_transaction()
-                abort(500, 'fail user insert')
+                abort(500, 'Fail user insert')
 
         return user_document, 201
 
     @api.doc('delete_user')
+    @api.response(204, 'Deleted User')
     def delete(self, user_id):
         '''delete user by user_id'''
         result = docscare_db.users.delete_one({'user_id': user_id})
 
         if result.deleted_count == 0:
-            abort(400, 'user not found')
+            abort(400, 'User not found')
 
         return 'Deleted User', 204

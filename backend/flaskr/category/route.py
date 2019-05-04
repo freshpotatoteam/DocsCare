@@ -2,7 +2,7 @@ from flask import request, abort
 from flask_restplus import Resource
 
 from backend.app import docscare_db
-from backend.flaskr.category.swagger import api
+from backend.flaskr.category.swagger import api, user_category_item
 
 category_prefix = 'C'
 
@@ -17,24 +17,30 @@ class Category(Resource):
     with_category_name_parser.add_argument('category_name', help='Category Name To add (category_id auto create)',
                                            required=True)
 
-    @api.expect(default_parser, validate=True)
     @api.doc('get_user_category_list')
+    @api.expect(default_parser, validate=True)
+    @api.marshal_with([user_category_item])
     def get(self):
         '''get category list by user_id'''
         result = docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})
 
         if result is None:
-            abort(400, 'user categories not found')
+            abort(400, 'User categories not found')
 
         return result['categories']
 
-    @api.expect(with_category_name_parser, validate=True)
     @api.doc('add_user_category_list')
+    @api.expect(with_category_name_parser, validate=True)
     def put(self):
         '''add category by user_id'''
 
+        user_category_by_user_id = docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})
+
+        if user_category_by_user_id is None:
+            abort(400, 'User categories not found')
+
         last_key_index = int(
-            docscare_db.userCategories.find_one({'user_id': request.args.get('user_id')})['categories'][-1][
+            user_category_by_user_id['categories'][-1][
                 'category_id'][len(category_prefix):]) + 1
 
         result = docscare_db.userCategories.update_one({
@@ -49,16 +55,17 @@ class Category(Resource):
         if result.modified_count == 0:
             abort(500, 'fail category add')
 
-        return 'success category add', 200
+        return 'Success category add', 200
 
     @api.expect(default_parser, validate=True)
     @api.doc('delete_user_category')
+    @api.response(204, 'Deleted User Category')
     def delete(self):
         '''delete user category by user_id'''
         result = docscare_db.userCategories.delete_one({'user_id': request.args.get('user_id')})
 
         if result.deleted_count == 0:
-            abort(400, 'user categories not found')
+            abort(400, 'User categories not found')
 
         return 'Deleted User Category', 204
 
@@ -83,10 +90,10 @@ class CategoryNameUpdate(Resource):
         })
 
         if result.matched_count == 0:
-            abort(400, 'user categories not found')
+            abort(400, 'User categories not found')
         elif result.matched_count != 0 and result.modified_count == 0:
-            abort(400, 'already equal category name')
+            abort(400, 'Already equal category name')
         else:
-            abort(500, 'fail category name update')
+            abort(500, 'Fail category name update')
 
-        return 'success category name update', 200
+        return 'Success category name update', 200

@@ -95,7 +95,7 @@ class ImageWithCategoryId(Resource):
     @api.marshal_list_with(user_image)
     @token_required
     def get(self, category_id):
-        '''get user image list by by user_id and category_id'''
+        '''get user image list by by user_id and category_id(Do category_id transfer 'all' for all category)'''
         result = None
 
         if category_id == 'all':

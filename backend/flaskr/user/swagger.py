@@ -1,6 +1,6 @@
 from flask_restplus import Namespace, fields
 
-api = Namespace('users', description='회원 관련 api')
+api = Namespace('users', description='유저 회원 관련 api')
 
 user = api.model('User', {
     'user_id': fields.String(required=True, description='user id'),

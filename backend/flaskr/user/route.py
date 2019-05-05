@@ -56,7 +56,8 @@ class User(Resource):
             with session.start_transaction():
                 try:
                     result = docscare_db.users.delete_one({'user_id': user_id})
-                    # Todo userImages, userCategories 일괄 삭제
+                    docscare_db.userCategories.delete_one({'user_id': user_id})
+                    docscare_db.userImages.delete({'user_id': user_id})
                 except Exception as e:
                     session.abort_transaction()
                     abort(500, 'Failed user delete, {}'.format(e))

@@ -1,6 +1,6 @@
 Flask
 Flask-Zipkin
-Flask-PyMongo
+pymongo
 gunicorn
 flask-restplus
 boto3

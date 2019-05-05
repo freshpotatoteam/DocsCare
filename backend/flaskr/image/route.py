@@ -96,7 +96,12 @@ class ImageWithCategoryId(Resource):
     @token_required
     def get(self, category_id):
         '''get user image list by by user_id and category_id'''
-        result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'category_id': category_id})
+        result = None
+
+        if category_id == 'all':
+            result = docscare_db.userImages.find({'user_id': request.args.get('user_id')})
+        else:
+            result = docscare_db.userImages.find({'user_id': request.args.get('user_id'), 'category_id': category_id})
 
         if result is None:
             abort(400, 'Image Not Found')

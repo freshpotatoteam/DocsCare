@@ -58,7 +58,6 @@ class Category(Resource):
                             'category_id': category_prefix + str(last_key_index)}
                         }
                     }, session=session)
-                    # Todo userImages Collection 카테고리 일괄 변경
                 except Exception as e:
                     session.abort_transaction()
                     abort(500, 'Failed category add, {}'.format(e))
@@ -93,7 +92,6 @@ class CategoryWithCategoryId(Resource):
                     }, {
                         '$set': {'categories.$.category_name': request.args.get('category_name')}
                     }, session=session)
-                    # Todo userImages Collection 해당 images들 Category name 변경
                 except Exception as e:
                     abort(500, 'Failed category name update, {}'.format(e))
 
@@ -126,7 +124,14 @@ class CategoryWithCategoryId(Resource):
                             }
                         }
                     }, session=session)
-                    # Todo userImages Collection 해당 images들 No Category로 변경
+                    docscare_db.userImages.update({
+                        'user_id': request.args.get('user_id'),
+                        'category_id': category_id
+                    }, {
+                        '$set': {
+                            'category_id': ''
+                        }
+                    }, session=session)
                 except Exception as e:
                     session.abort_transaction()
                     abort(500, 'Failed delete user category, {}'.format(e))

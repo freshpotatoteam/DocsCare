@@ -1,12 +1,13 @@
+from datetime import datetime
+
 from bson.objectid import ObjectId
 from flask import request, abort
 from flask_restplus import Resource
-from werkzeug.utils import secure_filename
 
 import backend.settings as settings
 from backend.app import docscare_db
 from backend.flaskr.image.service import *
-from backend.flaskr.image.swagger import api, user_image, insert_user_image
+from backend.flaskr.image.swagger import api, user_image
 from backend.flaskr.util.token_utils import token_required
 
 
@@ -34,7 +35,7 @@ class Image(Resource):
 
         return result
 
-    @api.doc('post_image', body=insert_user_image, parser=default_parser)
+    @api.doc('post_image')
     @api.marshal_with(user_image, code=201, description='Success User Image Insert')
     @token_required
     def post(self):
@@ -47,12 +48,34 @@ class Image(Resource):
         if file.filename == "":
             return abort(400, 'Please select a file')
 
-        if file and allowed_file(file.filename):
-            file.filename = secure_filename(file.filename)
-            output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
-            print(output)
+        try:
+            if file and allowed_file(file.filename):
+                file.filename = 'asd.jpg'
+                file.save(os.path.join(settings.UPLOAD_FOLDER, file.filename))
+                path = "./upload/{}".format(file.filename)
+                print("file was uploaded in {} ".format(path))
+                rec_string = process_image(path=path)
+                # source upload
+                # output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
+                source_image_output = None
+                # thumnail upload
+                # output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
+                thumbnail_image_output = None
 
-        # docscare_db.userImages.insert()
+                now = datetime.now()
+                user_image_document = {
+                    'user_id': request.args.get('user_id'),
+                    'image_text': chomp(rec_string),
+                    'image_url': source_image_output,
+                    'image_thumbnail_url': thumbnail_image_output,
+                    'insert_datetime': now,
+                    'update_datetime': now,
+                }
+
+                os.remove(path)
+        except Exception as e:
+            abort(500, 'Failed user image insert, {}'.format(e))
+
         return 'asd'
 
 

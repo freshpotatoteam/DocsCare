@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from flask import request, abort
 from flask_restplus import Resource
 
@@ -113,7 +115,6 @@ class CategoryWithCategoryId(Resource):
         result = None
         with mongo.start_session() as session:
             with session.start_transaction():
-
                 try:
                     result = docscare_db.userCategories.update_one({
                         'user_id': request.args.get('user_id')
@@ -129,7 +130,8 @@ class CategoryWithCategoryId(Resource):
                         'category_id': category_id
                     }, {
                         '$set': {
-                            'category_id': ''
+                            'category_id': '',
+                            'update_datetime': datetime.now()
                         }
                     }, session=session)
                 except Exception as e:

@@ -56,27 +56,30 @@ class Image(Resource):
                 print("file was uploaded in {} ".format(path))
                 rec_string = process_image(path=path)
                 # source upload
-                # output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
+                # source_image_output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
                 source_image_output = None
                 # thumnail upload
-                # output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
+                # thumbnail_image_output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
                 thumbnail_image_output = None
 
-                now = datetime.now()
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
                 user_image_document = {
                     'user_id': request.args.get('user_id'),
                     'image_text': chomp(rec_string),
                     'image_url': source_image_output,
                     'image_thumbnail_url': thumbnail_image_output,
+                    'image_name': request.form['image_name'],
+                    'category_id': 'C1',
                     'insert_datetime': now,
                     'update_datetime': now,
                 }
-
+                # docscare_db.userImages.insert_one(user_image_document, session=session)
                 os.remove(path)
         except Exception as e:
             abort(500, 'Failed user image insert, {}'.format(e))
 
-        return 'asd'
+        return user_image_document, 200
 
 
 @api.route('/<image_id>')

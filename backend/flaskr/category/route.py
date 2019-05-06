@@ -131,7 +131,7 @@ class CategoryWithCategoryId(Resource):
                     }, {
                         '$set': {
                             'category_id': '',
-                            'update_datetime': datetime.now()
+                            'update_datetime': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                         }
                     }, session=session)
                 except Exception as e:

@@ -37,7 +37,6 @@ def process_image(url=None, path=None):
     else:
         return "Wrong Wrong Wrong, What are you doing ??? "
 
-    print(image)
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
@@ -50,7 +49,6 @@ def process_image(url=None, path=None):
 
     print("Recongizeing...")
     rec_string = image_to_string(cao, lang='kor')
-    print("the result is {}".format(rec_string))
     return rec_string
 
 

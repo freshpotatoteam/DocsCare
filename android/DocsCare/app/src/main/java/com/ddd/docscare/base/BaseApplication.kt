@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.os.Build
+import android.support.multidex.MultiDexApplication
 import android.util.Base64
 import android.util.Log
 import com.ddd.docscare.sns.KakaoSdkAdapter
@@ -13,7 +14,7 @@ import com.kakao.auth.KakaoSDK
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
-class BaseApplication: Application() {
+class BaseApplication: MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

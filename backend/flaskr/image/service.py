@@ -31,6 +31,7 @@ def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
 def process_image(url=None, path=None):
     image = None
 
+    # TODO PDF 처리 이슈
     if url != None:
         image = url_to_image(url)
     elif path != None:
@@ -76,4 +77,8 @@ def make_thumbnail_image(file):
 def chomp(str):
     str = str.replace("\r", "")
     str = str.replace("\n", "")
+    return str
+
+
+def classifi_category_by_image_string(str):
     return str

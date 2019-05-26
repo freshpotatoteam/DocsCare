@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ddd.docscare">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -17,24 +17,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.main.Main">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".sns.DcFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- 알림 기본 아이콘 및 색상 -->
+        </service> <!-- 알림 기본 아이콘 및 색상 -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_gray" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorPrimary" />
-
-        <!-- 카카오 API Key -->
+            android:resource="@color/colorPrimary" /> <!-- 카카오 API Key -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_api_key" />
@@ -46,7 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

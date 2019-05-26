@@ -17,9 +17,10 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 TEMP_IMAGE_PATH = './upload/tmp.jpg'
 
 
-def upload_file_to_s3(file, location, bucket_name, acl='public-read'):
+def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
     try:
-        s3.Bucket(bucket_name).put_object(Key=file.filename, Body=file)
+        # Key = folder name + file name
+        s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file)
     except Exception as e:
         print('Something Happened: ', e)
         return e
@@ -48,7 +49,7 @@ def process_image(url=None, path=None):
     os.remove(TEMP_IMAGE_PATH)
 
     print("Recongizeing...")
-    rec_string = image_to_string(cao, lang='kor')
+    rec_string = image_to_string(cao, lang='kor+eng')
     return rec_string
 
 
@@ -65,9 +66,11 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-def make_thumbnail_image(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def make_thumbnail_image(file):
+    image = Image.open(file)
+    thumbnail_image =  image.crop((0, 0, 200, 200))
+    thumbnail_image.save(file.filename)
+    return file
 
 
 def chomp(str):

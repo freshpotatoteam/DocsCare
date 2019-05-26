@@ -3,12 +3,15 @@ from datetime import datetime
 from bson.objectid import ObjectId
 from flask import request, abort
 from flask_restplus import Resource
+from werkzeug.utils import secure_filename
 
 import backend.settings as settings
 from backend.app import docscare_db
 from backend.flaskr.image.service import *
 from backend.flaskr.image.swagger import api, user_image
 from backend.flaskr.util.token_utils import token_required
+
+file_name_prefix = '새 파일'
 
 
 @api.route('')
@@ -50,17 +53,23 @@ class Image(Resource):
 
         try:
             if file and allowed_file(file.filename):
-                file.filename = 'asd.jpg'
+                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+                file.filename = secure_filename(file.filename)
+                image_name = request.form['image_name'] or '{} {}'.format(file_name_prefix, now)
+
                 file.save(os.path.join(settings.UPLOAD_FOLDER, file.filename))
                 path = "./upload/{}".format(file.filename)
                 print("file was uploaded in {} ".format(path))
                 rec_string = process_image(path=path)
-                # source upload
-                # source_image_output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
-                source_image_output = None
-                # thumnail upload
-                # thumbnail_image_output = upload_file_to_s3(file, settings.S3_LOCATION, settings.S3_BUCKET)
-                thumbnail_image_output = None
+                file.seek(0, 0)
+                source_image_output = upload_file_to_s3(file, settings.S3_SOURCE_FOLDER,
+                                                        settings.S3_SOURCE_IMAGE_LOCATION, settings.S3_BUCKET)
+
+                thumbnail_image_file = make_thumbnail_image(file)
+                thumbnail_image_file.seek(0, 0)
+                thumbnail_image_output = upload_file_to_s3(thumbnail_image_file, settings.S3_THUMBNAIL_FOLDER,
+                                                           settings.S3_THUMBNAIL_IMAGE_LOCATION, settings.S3_BUCKET)
 
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -69,12 +78,12 @@ class Image(Resource):
                     'image_text': chomp(rec_string),
                     'image_url': source_image_output,
                     'image_thumbnail_url': thumbnail_image_output,
-                    'image_name': request.form['image_name'],
+                    'image_name': image_name,
                     'category_id': 'C1',
                     'insert_datetime': now,
                     'update_datetime': now,
                 }
-                # docscare_db.userImages.insert_one(user_image_document, session=session)
+                docscare_db.userImages.insert_one(user_image_document)
                 os.remove(path)
         except Exception as e:
             abort(500, 'Failed user image insert, {}'.format(e))
@@ -85,6 +94,9 @@ class Image(Resource):
 @api.route('/<image_id>')
 @api.param('image_id', 'The image identifier')
 class ImageWithImageId(Resource):
+    with_image_name_parser = api.parser()
+    with_image_name_parser.add_argument('image_name', help='Image Name To Update', required=True)
+
     @api.doc('get_user_image')
     @api.marshal_with(user_image)
     @token_required
@@ -95,7 +107,23 @@ class ImageWithImageId(Resource):
         if result is None:
             abort(400, 'Image Not Found')
 
-        return 'asd', 200
+        return result, 200
+
+    @api.doc('update_user_image_name')
+    @api.expect(with_image_name_parser, validate=True)
+    @token_required
+    def put(self, image_id):
+        '''update user image name by image_id'''
+        result = docscare_db.userImages.update_one({
+            '_id': ObjectId(image_id)
+        }, {
+            '$set': {'image_name': request.args.get('image_name')}
+        })
+
+        if result.matched_count == 0:
+            abort(400, 'Image Not Found')
+
+        return 'Updated User Image Name', 200
 
     @api.doc('delete_user_image')
     @api.response(200, 'Deleted User')
@@ -143,7 +171,6 @@ class ImageWithImageIdAndCategoryId(Resource):
     default_parser.add_argument('user_id', help='The user identifier', required=True)
 
     @api.doc('update_user_image_category')
-    @api.marshal_with(user_image)
     @token_required
     def put(self, image_id, category_id):
         '''update user image category by image_id and category_id'''

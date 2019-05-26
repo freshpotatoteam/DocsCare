@@ -125,7 +125,8 @@ class CategoryWithCategoryId(Resource):
                             }
                         }
                     }, session=session)
-                    docscare_db.userImages.update({
+
+                    docscare_db.userImages.update_many({
                         'user_id': request.args.get('user_id'),
                         'category_id': category_id
                     }, {

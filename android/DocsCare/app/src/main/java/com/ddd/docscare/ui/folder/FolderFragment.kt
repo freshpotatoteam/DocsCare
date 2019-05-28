@@ -1,4 +1,4 @@
-package com.ddd.docscare.ui.main.folder
+package com.ddd.docscare.ui.folder
 
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseFragment
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.ui.SpacesItemDecoration
 import kotlinx.android.synthetic.main.fragment_folder.*
 import kotlinx.android.synthetic.main.fragment_folder_item.view.*
 
@@ -26,8 +27,12 @@ class FolderFragment: BaseFragment() {
     private fun initLayout() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
-        recyclerView.addItemDecoration(SpacesItemDecoration(
-                resources.getDimensionPixelSize(R.dimen.folder_item_space)))
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.addItemDecoration(
+            SpacesItemDecoration(
+                resources.getDimensionPixelSize(R.dimen.folder_item_space)
+            )
+        )
 
         btnAddFolder.setOnClickListener {
             adapter.add(FolderItem(title = "TEST"))

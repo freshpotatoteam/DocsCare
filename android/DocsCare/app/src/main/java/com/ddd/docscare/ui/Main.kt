@@ -1,15 +1,20 @@
-package com.ddd.docscare.ui.main
+package com.ddd.docscare.ui
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
-import com.ddd.docscare.ui.main.folder.FolderFragment
+import com.ddd.docscare.ui.folder.FolderFragment
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
 
@@ -24,9 +29,26 @@ class Main : BaseActivity() {
         initLayout()
     }
 
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if(ev.action == MotionEvent.ACTION_DOWN) {
+            val view = currentFocus
+            if(view is EditText) {
+                val outRect = Rect()
+                view.getGlobalVisibleRect(outRect)
+                if(outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                    view.clearFocus()
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun initLayout() {
         recentlyUsedView.adapter = adapter
         recentlyUsedView.layoutManager = LinearLayoutManager(this)
+        recentlyUsedView.isNestedScrollingEnabled = false
 
         adapter.add(RecentlyUsedItem(title = "최근문서"))
         adapter.add(RecentlyUsedItem(title = "DocsCare_ 2019.06.03"))
@@ -37,7 +59,10 @@ class Main : BaseActivity() {
         adapter.notifyDataSetChanged()
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.mainFrame, FolderFragment.newInstance())
+            .replace(
+                R.id.mainFrame,
+                FolderFragment.newInstance()
+            )
             .commit()
     }
 
@@ -60,9 +85,21 @@ class Main : BaseActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): RecyclerView.ViewHolder {
             return if(type == 0) {
-                RecentlyUsedHeaderViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_recently_used_item, parent, false))
+                RecentlyUsedHeaderViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.activity_recently_used_item,
+                        parent,
+                        false
+                    )
+                )
             } else {
-                RecentlyUsedViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.activity_recently_used_item, parent, false))
+                RecentlyUsedViewHolder(
+                    LayoutInflater.from(parent.context).inflate(
+                        R.layout.activity_recently_used_item,
+                        parent,
+                        false
+                    )
+                )
             }
         }
     }

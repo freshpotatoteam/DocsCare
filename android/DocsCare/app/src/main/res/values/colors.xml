@@ -6,6 +6,18 @@
 
     <color name="translucent">#00ff0000</color>
 
+    <color name="transparent_100">#ff000000</color>
+    <color name="transparent_90">#e6000000</color>
+    <color name="transparent_80">#cc000000</color>
+    <color name="transparent_70">#b3000000</color>
+    <color name="transparent_60">#99000000</color>
+    <color name="transparent_50">#80000000</color>
+    <color name="transparent_40">#66000000</color>
+    <color name="transparent_30">#4d000000</color>
+    <color name="transparent_20">#33000000</color>
+    <color name="transparent_10">#1a000000</color>
+    <color name="transparent_0">#00000000</color>
+
     <array name="lightPalette">
         <item>@color/red_700</item>
         <item>@color/deep_orange_700</item>

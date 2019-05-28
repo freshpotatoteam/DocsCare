@@ -1,6 +1,5 @@
 package com.ddd.docscare.ui
 
-import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,12 +8,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.ui.folder.FolderFragment
+import kotlinx.android.synthetic.main.activity_recently_used_header_item.view.*
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
 
@@ -35,10 +34,9 @@ class Main : BaseActivity() {
             if(view is EditText) {
                 val outRect = Rect()
                 view.getGlobalVisibleRect(outRect)
-                if(outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
+                if(!outRect.contains(ev.rawX.toInt(), ev.rawY.toInt())) {
                     view.clearFocus()
-                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    hideKeyboard()
                 }
             }
         }
@@ -74,9 +72,18 @@ class Main : BaseActivity() {
             item: RecentlyUsedItem,
             position: Int
         ) {
-            val holderView = holder.itemView
+            when(holder) {
+                is RecentlyUsedHeaderViewHolder -> {
+                    val holderView = holder.itemView
+                    holderView.tv_recently_header_title.text = "최근문서"
+                }
 
-            holderView.tv_recently_title.text = item.title
+                is RecentlyUsedViewHolder -> {
+                    val holderView = holder.itemView
+                    holderView.tv_recently_doc_title.text = item.title
+                }
+            }
+
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -87,7 +94,7 @@ class Main : BaseActivity() {
             return if(type == 0) {
                 RecentlyUsedHeaderViewHolder(
                     LayoutInflater.from(parent.context).inflate(
-                        R.layout.activity_recently_used_item,
+                        R.layout.activity_recently_used_header_item,
                         parent,
                         false
                     )

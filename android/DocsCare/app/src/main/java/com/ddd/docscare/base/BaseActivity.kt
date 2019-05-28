@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDialog
+import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import com.ddd.docscare.inject.Injection
 
@@ -39,6 +40,13 @@ open class BaseActivity: AppCompatActivity() {
                 window?.setBackgroundDrawable(ContextCompat.getDrawable(context, R.color.translucent))
                 setCanceledOnTouchOutside(false)
             }
+        }
+    }
+
+    fun hideKeyboard() {
+        currentFocus?.let {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
         }
     }
 

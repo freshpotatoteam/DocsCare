@@ -35,6 +35,7 @@ class FolderFragment: BaseFragment() {
         )
 
         btnAddFolder.setOnClickListener {
+            //TODO 1. title로 폴더만들기  2. 폴더-폴더ID DB 연동   3. UI Update
             adapter.add(FolderItem(title = "TEST"))
             adapter.notifyDataSetChanged()
         }
@@ -59,6 +60,8 @@ class FolderFragment: BaseFragment() {
             val holderView = holder.itemView
 
             holderView.tv_folder_title.text = item.title
+
+            // TODO  Button Click Listener : 폴더 상세보기 프레그먼트 전환
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): FolderViewHolder {

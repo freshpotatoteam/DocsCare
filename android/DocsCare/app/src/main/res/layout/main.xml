@@ -40,7 +40,7 @@
             android:hint="검색어를 입력하세요"
             android:textSize="16sp"
             android:textColor="#9b9b9b"
-            android:elevation="2dp"/>
+            android:elevation="4dp" />
 
         <ImageView
             android:id="@+id/ivMainImage"

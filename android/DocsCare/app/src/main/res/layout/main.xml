@@ -34,6 +34,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:paddingLeft="17dp"
+            android:paddingRight="14dp"
             android:background="@drawable/edit_text_search_round_corner"
             android:drawableRight="@drawable/ic_search"
             android:hint="검색어를 입력하세요"
@@ -67,7 +68,9 @@
             app:layout_constraintTop_toBottomOf="@+id/mainFrame"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="16dp" />
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="24dp"/>
 
     </android.support.constraint.ConstraintLayout>
 

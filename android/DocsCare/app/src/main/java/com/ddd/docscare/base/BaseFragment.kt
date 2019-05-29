@@ -34,6 +34,8 @@ abstract class BaseFragment: ViewLifecycleFragment() {
     fun showProgress() = mActivity.showProgress()
     fun dismissProgress() = mActivity.dismissProgress()
     fun dismissProgressForce() = mActivity.dismissProgressForce()
+    fun hideKeyboard() = mActivity.hideKeyboard()
+    fun showKeyboard(input: View) = mActivity.showKeyboard(input)
 
     inline fun <reified T : BaseViewModel> getViewModel(): T {
         val viewModelFactory = Injection.provideViewModelFactory()

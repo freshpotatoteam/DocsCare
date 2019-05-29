@@ -2,6 +2,7 @@ package com.ddd.docscare.ui
 
 import android.graphics.Rect
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.ui.folder.FolderFragment
+import com.ddd.docscare.util.onRightDrawableClicked
 import kotlinx.android.synthetic.main.activity_recently_used_header_item.view.*
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
@@ -46,6 +48,11 @@ class Main : BaseActivity() {
     private fun initLayout() {
         recentlyUsedView.adapter = adapter
         recentlyUsedView.layoutManager = LinearLayoutManager(this)
+        recentlyUsedView.addItemDecoration(
+            SpacesItemDecoration(
+                resources.getDimensionPixelSize(R.dimen.recently_item_space)
+            )
+        )
         recentlyUsedView.isNestedScrollingEnabled = false
 
         adapter.add(RecentlyUsedItem(title = "최근문서"))
@@ -62,6 +69,13 @@ class Main : BaseActivity() {
                 FolderFragment.newInstance()
             )
             .commit()
+
+        edtSearch.onRightDrawableClicked {
+            it.text.clear()
+            it.clearFocus()
+            hideKeyboard()
+            //TODO 폴더 및 파일 검색 (Rx 사용, debounce)
+        }
     }
 
 

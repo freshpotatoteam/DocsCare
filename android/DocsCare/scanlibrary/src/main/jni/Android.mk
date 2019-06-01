@@ -4,8 +4,8 @@ include $(CLEAR_VARS)
 
 #opencv library
 # different depend on user environment
-OPENCVROOT:= /Users/kim/Desktop/SimpleScanner/scanlibrary/src/main/jni/sdk
-#OPENCVROOT:= D:/android_workspace/DocsCare/android/DocsCare/scanlibrary/src/main/jni/sdk
+#OPENCVROOT:= /Users/kim/Desktop/SimpleScanner/scanlibrary/src/main/jni/sdk
+OPENCVROOT:= D:/android_workspace/DocsCare/android/DocsCare/scanlibrary/src/main/jni/sdk
 OPENCV_CAMERA_MODULES:=on
 OPENCV_INSTALL_MODULES:=on
 OPENCV_LIB_TYPE:=SHARED

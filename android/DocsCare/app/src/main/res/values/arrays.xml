@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="category">
+        <item>커리어</item>
+        <item>학업</item>
+        <item>공공문서</item>
+        <item>금융</item>
+        <item>여행</item>
+        <item>부동산</item>
+    </string-array>
+
+</resources>

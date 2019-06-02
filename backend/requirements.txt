@@ -5,5 +5,5 @@ gunicorn
 flask-restplus
 boto3
 pytesseract
-cv2
+opencv-python
 tesseract

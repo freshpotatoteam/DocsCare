@@ -1,9 +1,9 @@
 from flask import request, abort
 from flask_restplus import Resource
 
-from backend.app import mongo, docscare_db
-from backend.flaskr.user.swagger import api, user, insert_user
-from backend.flaskr.util.token_utils import token_required
+from app import mongo, docscare_db
+from flaskr.user.swagger import api, user, insert_user
+from flaskr.util.token_utils import token_required
 
 
 @api.route('/<user_id>')

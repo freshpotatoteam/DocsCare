@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import request, abort
 
-import backend.settings as settings
+import settings as settings
 
 
 def token_required(f):

@@ -5,11 +5,11 @@ from flask import request, abort
 from flask_restplus import Resource
 from werkzeug.utils import secure_filename
 
-import backend.settings as settings
-from backend.app import docscare_db
-from backend.flaskr.image.service import *
-from backend.flaskr.image.swagger import api, user_image
-from backend.flaskr.util.token_utils import token_required
+import settings as settings
+from app import docscare_db
+from flaskr.image.service import *
+from flaskr.image.swagger import api, user_image
+from flaskr.util.token_utils import token_required
 
 file_name_prefix = '새 파일'
 

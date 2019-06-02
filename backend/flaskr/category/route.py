@@ -3,9 +3,9 @@ from datetime import datetime
 from flask import request, abort
 from flask_restplus import Resource
 
-from backend.app import mongo, docscare_db
-from backend.flaskr.category.swagger import api, user_category_item
-from backend.flaskr.util.token_utils import token_required
+from app import mongo, docscare_db
+from flaskr.category.swagger import api, user_category_item
+from flaskr.util.token_utils import token_required
 
 category_prefix = 'C'
 

@@ -2,9 +2,9 @@ import logging
 
 from flask import Flask
 
-import backend.db as db
-import backend.flaskr as route
-import backend.settings as settings
+import db as db
+import flaskr as route
+import settings as settings
 
 app = Flask(__name__)
 

@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <View
         android:layout_width="0dp"
@@ -25,7 +26,8 @@
         android:layout_marginTop="22dp"
         android:layout_marginLeft="32dp"
         android:layout_marginRight="32dp"
-        android:layout_marginBottom="31dp" />
+        android:layout_marginBottom="31dp"
+        tools:listitem="@layout/fragment_folder_item"/>
     
     <ImageButton
         android:id="@+id/btnAddFolder"

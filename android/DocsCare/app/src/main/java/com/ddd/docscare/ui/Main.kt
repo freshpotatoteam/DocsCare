@@ -2,7 +2,6 @@ package com.ddd.docscare.ui
 
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -123,8 +122,8 @@ class Main : BaseActivity() {
                 )
             }
         }
-    }
 
-    class RecentlyUsedHeaderViewHolder(view: View): RecyclerView.ViewHolder(view)
-    class RecentlyUsedViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class RecentlyUsedHeaderViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class RecentlyUsedViewHolder(view: View): RecyclerView.ViewHolder(view)
+    }
 }

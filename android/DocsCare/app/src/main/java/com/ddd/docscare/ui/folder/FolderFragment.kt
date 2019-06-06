@@ -1,12 +1,14 @@
 package com.ddd.docscare.ui.folder
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import com.ddd.docscare.R
@@ -56,7 +58,7 @@ class FolderFragment: BaseFragment() {
     }
 
 
-    class FolderAdapter(private val context: Context): BaseRecyclerAdapter<FolderItem, FolderViewHolder>() {
+    class FolderAdapter(private val context: Context): BaseRecyclerAdapter<FolderItem, FolderAdapter.FolderViewHolder>() {
 
         private val folderStateMap: HashMap<String, Boolean> by lazy { HashMap<String, Boolean>() }
 
@@ -105,6 +107,7 @@ class FolderFragment: BaseFragment() {
             holderView.setOnClickListener {
                 // TODO 폴더 상세보기 프레그먼트 전환
                 Toast.makeText(context, "${holder.adapterPosition} 클릭", Toast.LENGTH_SHORT).show()
+                context.startActivity(Intent(context, FolderDetailActivity::class.java))
             }
 
 
@@ -130,9 +133,9 @@ class FolderFragment: BaseFragment() {
         fun setFolderState(key: String, v: Boolean){
             folderStateMap[key] = v
         }
-    }
 
-    class FolderViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class FolderViewHolder(view: View): RecyclerView.ViewHolder(view)
+    }
 
     companion object {
         fun newInstance(): FolderFragment {

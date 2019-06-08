@@ -1,5 +1,6 @@
 package com.ddd.docscare.ui.folder
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,12 +14,13 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.ui.document.DocumentDetailActivity
 import kotlinx.android.synthetic.main.activity_folder_detail.*
 import kotlinx.android.synthetic.main.activity_folder_detail_item.view.*
 
 class FolderDetailActivity : BaseActivity() {
 
-    private val adapter by lazy { FolderDetailAdapter() }
+    private val adapter by lazy { FolderDetailAdapter(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +77,19 @@ class FolderDetailActivity : BaseActivity() {
         adapter.notifyDataSetChanged()
     }
 
-    data class FolderDetailItem(var title: String = "")
-    class FolderDetailAdapter: BaseRecyclerAdapter<FolderDetailItem, RecyclerView.ViewHolder>() {
+    data class FolderDetailItem(var title: String = "", var path: String = "")
+    class FolderDetailAdapter(private val context: Context): BaseRecyclerAdapter<FolderDetailItem, RecyclerView.ViewHolder>() {
         override fun onBindView(
             holder: RecyclerView.ViewHolder,
             item: FolderDetailItem,
             position: Int
         ) {
             holder.itemView.tv_folder_detail_title.text = item.title
+            holder.itemView.setOnClickListener {
+                //TODO 이미지 상세보기
+
+                DocumentDetailActivity.startActivity(context, item.path)
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): RecyclerView.ViewHolder {

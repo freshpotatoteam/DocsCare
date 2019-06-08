@@ -16,6 +16,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
 
         Properties props = new Properties()
         props.load(new FileInputStream(new File('secret.properties')))
@@ -118,6 +119,9 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:1.1.1"
     kapt "android.arch.persistence.room:compiler:1.1.1"
 
+    // Itext pdf library
+    implementation 'com.itextpdf:itextg:5.5.10'
+    implementation 'com.madgag.spongycastle:core:1.58.0.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

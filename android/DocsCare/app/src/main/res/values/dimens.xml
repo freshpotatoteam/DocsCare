@@ -3,4 +3,5 @@
     
     <dimen name="folder_item_space">16dp</dimen>
     <dimen name="recently_item_space">16dp</dimen>
+    <dimen name="doc_detail_item_space">16dp</dimen>
 </resources>

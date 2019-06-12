@@ -19,7 +19,7 @@
         android:layout_marginRight="15dp"
         android:padding="13dp"
         android:background="@drawable/image_button_circle"
-        android:src="@drawable/ic_photo_camera"/>
+        app:srcCompat="@drawable/ic_photo_camera"/>
 
     <ImageView
         android:id="@+id/home"
@@ -29,7 +29,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginLeft="23dp"
-        android:src="@drawable/ic_home"/>
+        app:srcCompat="@drawable/ic_home"/>
 
     <ImageView
         android:id="@+id/newFile"
@@ -39,6 +39,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="23dp"
-        android:src="@drawable/ic_file"/>
+        app:srcCompat="@drawable/ic_file"/>
 
 </android.support.constraint.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.ddd.docscare.ui.folder
+package com.ddd.docscare.model
 
 data class FolderItem(
     val resourceId: Int = -1,

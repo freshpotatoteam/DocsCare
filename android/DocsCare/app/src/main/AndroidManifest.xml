@@ -17,7 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.document.DocumentDetailActivity"></activity>
+        <activity android:name=".MainActivity">
+        </activity>
+
+        <activity android:name=".ui.scan.ScanActivity"/>
+        <activity android:name=".ui.document.DocumentDetailActivity" />
         <activity android:name=".ui.folder.FolderDetailActivity" />
         <activity android:name=".ui.Main">
             <intent-filter>
@@ -41,6 +45,17 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_api_key" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.ddd.docscare.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
     </application>
 
 </manifest>

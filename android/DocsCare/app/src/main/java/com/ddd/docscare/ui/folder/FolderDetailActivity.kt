@@ -1,7 +1,15 @@
 package com.ddd.docscare.ui.folder
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.res.AssetFileDescriptor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.support.v4.content.FileProvider
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -13,14 +21,26 @@ import android.widget.Toast
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.common.IMAGE_FOLDER_PATH
+import com.ddd.docscare.common.PROVIDER
+import com.ddd.docscare.common.START_CAMERA_REQUEST_CODE
+import com.ddd.docscare.model.FolderDetailItem
 import com.ddd.docscare.ui.SpacesItemDecoration
 import com.ddd.docscare.ui.document.DocumentDetailActivity
+import com.ddd.docscare.ui.scan.ScanActivity
+import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_folder_detail.*
 import kotlinx.android.synthetic.main.activity_folder_detail_item.view.*
+import kotlinx.android.synthetic.main.bottom_navigation.*
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FolderDetailActivity : BaseActivity() {
 
     private val adapter by lazy { FolderDetailAdapter(this) }
+    private var fileUri: Uri? = null
+    private val sdf by lazy { SimpleDateFormat("yyyyMMdd_HHmmss") }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +48,6 @@ class FolderDetailActivity : BaseActivity() {
 
         initToolbar()
         initLayout()
-
-        // TODO 아이템 클릭시 아이템 상세보기 화면으로 이동
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -39,6 +57,25 @@ class FolderDetailActivity : BaseActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        var bitmap: Bitmap? = null
+
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                START_CAMERA_REQUEST_CODE -> {
+                    bitmap = fileUri?.let { getScaledBitmap(it) }
+                }
+            }
+
+            if(bitmap != null) {
+                val uri = Utils.getUri(this, bitmap)
+                bitmap.recycle()
+
+                ScanActivity.startActivity(this, uri)
+            }
+        }
     }
 
     private fun initToolbar() {
@@ -75,9 +112,59 @@ class FolderDetailActivity : BaseActivity() {
             adapter.add(FolderDetailItem("test$i"))
         }
         adapter.notifyDataSetChanged()
+
+        camera.setOnClickListener { openCamera() }
     }
 
-    data class FolderDetailItem(var title: String = "", var path: String = "")
+
+    // camera
+    private fun openCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+        val file = createImageFile()
+        file.parentFile.mkdirs()
+        val tempFileUri = FileProvider.getUriForFile(this,
+            PROVIDER,
+            file)
+
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempFileUri)
+        startActivityForResult(cameraIntent, START_CAMERA_REQUEST_CODE)
+    }
+
+    // camera
+    private fun createImageFile(): File {
+        clearTempImages()
+        val timeStamp = sdf.format(Date())
+        val file = File(IMAGE_FOLDER_PATH, "IMG_$timeStamp.jpg")
+        fileUri = Uri.fromFile(file)
+        return file
+    }
+
+    // camera
+    private fun clearTempImages() {
+        val tempFolder = File(IMAGE_FOLDER_PATH)
+        try {
+            for (file in tempFolder.listFiles()) {
+                file.delete()
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    // camera
+    private fun getScaledBitmap(selectedImg: Uri): Bitmap {
+        val options = BitmapFactory.Options().apply {
+            inSampleSize = 3
+        }
+
+        val fileDescriptor: AssetFileDescriptor? =
+            contentResolver.openAssetFileDescriptor(selectedImg, "r")
+
+        return BitmapFactory.decodeFileDescriptor(
+            fileDescriptor?.fileDescriptor, null, options)
+    }
+
     class FolderDetailAdapter(private val context: Context): BaseRecyclerAdapter<FolderDetailItem, RecyclerView.ViewHolder>() {
         override fun onBindView(
             holder: RecyclerView.ViewHolder,

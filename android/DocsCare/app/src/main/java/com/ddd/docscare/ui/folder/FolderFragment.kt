@@ -15,6 +15,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseFragment
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.model.FolderItem
 import com.ddd.docscare.ui.SpacesItemDecoration
 import com.ddd.docscare.util.formatToServerDateTimeDefaults
 import kotlinx.android.synthetic.main.fragment_folder.*

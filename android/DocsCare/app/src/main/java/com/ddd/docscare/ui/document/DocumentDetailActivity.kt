@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.model.DocumentDetailItem
 import com.ddd.docscare.ui.SpacesItemDecoration
 import kotlinx.android.synthetic.main.activity_document_detail.*
 import kotlinx.android.synthetic.main.activity_document_detail_header_item.view.*
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.activity_document_detail_item.view.*
 import kotlinx.android.synthetic.main.activity_document_detail_title_item.view.*
 import java.io.File
 import java.io.IOException
+import java.util.*
 
 class DocumentDetailActivity : BaseActivity() {
 
@@ -105,11 +107,6 @@ class DocumentDetailActivity : BaseActivity() {
         adapter.addAll(items)
         adapter.notifyDataSetChanged()
     }
-
-    data class DocumentDetailItem(var bitmap: Bitmap? = null,
-                                  var position: Int,
-                                  val type: Int,
-                                  val title: String = "")
 
     class DocumentDetailAdapter(private val base: BaseActivity):
         BaseRecyclerAdapter<DocumentDetailItem, RecyclerView.ViewHolder>() {

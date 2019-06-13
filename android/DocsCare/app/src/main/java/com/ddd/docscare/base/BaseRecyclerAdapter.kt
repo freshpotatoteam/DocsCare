@@ -1,6 +1,6 @@
 package com.ddd.docscare.base
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 
 abstract class BaseRecyclerAdapter<T, VH : RecyclerView.ViewHolder>: RecyclerView.Adapter<VH>() {
 

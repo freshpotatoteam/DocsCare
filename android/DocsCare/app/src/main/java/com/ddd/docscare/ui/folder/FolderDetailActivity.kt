@@ -9,10 +9,10 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.support.v4.content.FileProvider
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.helper.ItemTouchHelper
+import androidx.core.content.FileProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -88,7 +88,8 @@ class FolderDetailActivity : BaseActivity() {
     private fun initLayout() {
         folderDetailTitle.text = "커리어"
 
-        folderDetailRecyclerView.layoutManager = LinearLayoutManager(this)
+        folderDetailRecyclerView.layoutManager =
+            LinearLayoutManager(this)
         folderDetailRecyclerView.adapter = adapter
         folderDetailRecyclerView.addItemDecoration(
             SpacesItemDecoration(

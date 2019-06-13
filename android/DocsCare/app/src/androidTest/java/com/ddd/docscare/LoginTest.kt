@@ -1,8 +1,8 @@
 package com.ddd.docscare
 
 import android.app.Activity
-import android.support.test.rule.ActivityTestRule
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.rule.ActivityTestRule
+import androidx.test.runner.AndroidJUnit4
 import android.widget.Toast
 import com.ddd.docscare.sns.NaverLoginHelper
 import com.kakao.auth.AuthType

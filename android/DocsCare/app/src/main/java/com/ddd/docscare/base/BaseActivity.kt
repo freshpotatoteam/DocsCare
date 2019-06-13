@@ -1,13 +1,13 @@
 package com.ddd.docscare.base
 
 import com.ddd.docscare.R
-import android.arch.lifecycle.*
+import androidx.lifecycle.*
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.app.AppCompatDialog
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar

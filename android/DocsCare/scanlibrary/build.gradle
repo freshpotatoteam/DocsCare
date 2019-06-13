@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
 
     // androix 사용하는 경우 FileProvider 변경 필요
     //implementation 'androidx.legacy:legacy-support-v4:1.0.0'

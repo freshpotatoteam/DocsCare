@@ -4,6 +4,7 @@ import com.ddd.docscare.model.CategoryResponse
 import com.ddd.docscare.model.ImageResponse
 import com.ddd.docscare.model.UserInfo
 import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -18,7 +19,7 @@ interface ApiService {
 
     @GET("/images")
     fun getImages(@Field("user_id") user_id: String,
-                  @Field("text") text: String): Observable<List<ImageResponse>>
+                  @Field("text") text: String): Single<List<ImageResponse>>
 
 
     /**
@@ -26,7 +27,7 @@ interface ApiService {
      */
     @POST("/users/{user_id}")
     fun addUser(@Path("user_id") user_id: String,
-                @Body userInfo: UserInfo): Observable<UserInfo>
+                @Body userInfo: UserInfo): Single<UserInfo>
 
     @DELETE("/users/{user_id}")
     fun deleteUser(@Path("user_id") user_id: String)

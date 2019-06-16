@@ -1,16 +1,17 @@
 package com.ddd.docscare.base
 
 import android.annotation.SuppressLint
-import android.app.Application
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.pm.Signature
 import android.os.Build
-import androidx.multidex.MultiDexApplication
 import android.util.Base64
 import android.util.Log
+import androidx.multidex.MultiDexApplication
+import com.ddd.docscare.inject.appModule
 import com.ddd.docscare.sns.KakaoSdkAdapter
 import com.kakao.auth.KakaoSDK
+import org.koin.android.ext.android.startKoin
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -18,6 +19,9 @@ class BaseApplication: MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin(this, appModule)
+
         instance = this
 
         val debugKeyHash = getKeyHash()

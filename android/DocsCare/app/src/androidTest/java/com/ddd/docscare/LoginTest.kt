@@ -4,7 +4,9 @@ import android.app.Activity
 import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
 import android.widget.Toast
+import com.ddd.docscare.model.UserInfo
 import com.ddd.docscare.sns.NaverLoginHelper
+import com.ddd.docscare.sns.SnsLoginCallback
 import com.kakao.auth.AuthType
 import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
@@ -27,7 +29,15 @@ class LoginTest {
     fun naverLoginTest() {
         val activity = rule.activity
         activity.runOnUiThread {
-            NaverLoginHelper(activity).startOAuthLoginActivity()
+            NaverLoginHelper(activity, object: SnsLoginCallback {
+                override fun onFailed(e: Exception) {
+                    e.printStackTrace()
+                }
+
+                override fun onSuccess(userInfo: UserInfo) {
+                    println("user_id : ${userInfo.user_id}  nickname: ${userInfo.nickname}")
+                }
+            }).startOAuthLoginActivity()
         }
 
         Thread.sleep(150000)

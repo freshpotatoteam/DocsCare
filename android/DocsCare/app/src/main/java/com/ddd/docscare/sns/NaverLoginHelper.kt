@@ -4,13 +4,15 @@ import android.app.Activity
 import com.ddd.docscare.BuildConfig.NAVER_AUTH_CLIENT_ID
 import com.ddd.docscare.BuildConfig.NAVER_AUTH_SECRET
 import com.ddd.docscare.R
+import com.ddd.docscare.model.UserInfo
 import com.ddd.docscare.util.doAsync
 import com.nhn.android.naverlogin.OAuthLogin
 import com.nhn.android.naverlogin.OAuthLoginHandler
 import org.json.JSONObject
 import java.lang.ref.WeakReference
 
-class NaverLoginHelper(private val activity: Activity) {
+class NaverLoginHelper(private val activity: Activity,
+                       private val callback: SnsLoginCallback) {
 
     private val loginHelper: WeakReference<NaverLoginHelper> = WeakReference(this)
     private var loginModule: OAuthLogin
@@ -19,7 +21,7 @@ class NaverLoginHelper(private val activity: Activity) {
     init {
         loginModule = OAuthLogin.getInstance()
         loginModule.init(activity, NAVER_AUTH_CLIENT_ID, NAVER_AUTH_SECRET, activity.getString(R.string.app_name))
-        loginHandler = NaverLoginHandler(loginHelper, loginModule)
+        loginHandler = NaverLoginHandler(loginHelper, loginModule, callback)
     }
 
     fun startOAuthLoginActivity() {
@@ -44,7 +46,8 @@ class NaverLoginHelper(private val activity: Activity) {
 
 
     class NaverLoginHandler(private val outerClass: WeakReference<NaverLoginHelper>,
-                            private val module: OAuthLogin): OAuthLoginHandler() {
+                            private val module: OAuthLogin,
+                            private val callback: SnsLoginCallback): OAuthLoginHandler() {
 
         override fun run(success: Boolean) {
             outerClass.get()?.let {
@@ -68,6 +71,11 @@ class NaverLoginHelper(private val activity: Activity) {
                         println("id : $id \n nickname : $nickname \n image : $profile_image \n name : $name")
 
                         // 이후 회원가입 요청
+                        callback.onSuccess(
+                            UserInfo(user_id = id,
+                                nickname = nickname,
+                                profile_image_path = profile_image)
+                        )
                     }
                 } else {
                     println("errorCode ${module.getLastErrorCode(it.activity)}")

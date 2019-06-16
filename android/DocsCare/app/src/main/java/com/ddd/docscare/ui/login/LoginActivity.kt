@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import com.ddd.docscare.MainActivity
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
+import com.ddd.docscare.common.UserState
 import com.ddd.docscare.model.UserInfo
 import com.ddd.docscare.sns.KakaoLoginHelper
 import com.ddd.docscare.sns.NaverLoginHelper
@@ -47,8 +48,15 @@ class LoginActivity : BaseActivity() {
 
     private fun observe() {
         viewModel.loginResponse.observe(this, Observer {
-            println("user_id : ${it.user_id}  nickname: ${it.nickname}")
-            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+            when(it) {
+                is UserState.onSuccess -> {
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                }
+
+                is UserState.onFailed -> {
+                    println("$it")
+                }
+            }
         })
     }
 }

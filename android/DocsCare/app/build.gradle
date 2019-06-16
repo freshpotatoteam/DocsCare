@@ -21,6 +21,8 @@ android {
         Properties props = new Properties()
         props.load(new FileInputStream(new File('secret.properties')))
 
+        buildConfigField "String", "X_API_KEY", "\"${props["X-API-KEY"]}\""
+
         buildConfigField "String", "NAVER_AUTH_SECRET", "\"${props['NAVER_AUTH_SECRET']}\""
         buildConfigField "String", "NAVER_AUTH_CLIENT_ID", "\"${props['NAVER_AUTH_CLIENT_ID']}\""
     }

@@ -1,17 +1,19 @@
 package com.ddd.docscare.base
 
-import com.ddd.docscare.R
-import androidx.lifecycle.*
 import android.content.Context
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDialog
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
-import com.ddd.docscare.inject.Injection
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDialog
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import com.ddd.docscare.R
 
 open class BaseActivity: AppCompatActivity() {
 
@@ -73,11 +75,6 @@ open class BaseActivity: AppCompatActivity() {
 
     fun dismissProgressForce() {
         dismissProgress()
-    }
-
-    inline fun <reified T : BaseViewModel> getViewModel(): T {
-        val viewModelFactory = Injection.provideViewModelFactory()
-        return ViewModelProviders.of(this, viewModelFactory).get(T::class.java)
     }
 
     fun <T> LiveData<T>.reObserve(owner: LifecycleOwner, observer: Observer<T>) {

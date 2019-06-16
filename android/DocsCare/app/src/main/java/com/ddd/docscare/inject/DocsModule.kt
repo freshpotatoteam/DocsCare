@@ -1,9 +1,10 @@
 package com.ddd.docscare.inject
 
+import com.ddd.docscare.BuildConfig.X_API_KEY
 import com.ddd.docscare.common.BASE_URL
 import com.ddd.docscare.network.ApiService
-import com.ddd.docscare.repository.AppDataSource
-import com.ddd.docscare.repository.RemoteRepository
+import com.ddd.docscare.repository.AppRepository
+import com.ddd.docscare.repository.RemoteAppDataSource
 import com.ddd.docscare.ui.login.LoginViewModel
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.ext.koin.viewModel
@@ -20,7 +21,7 @@ val retrofitPart = module {
             .addConverterFactory(GsonConverterFactory.create())
             .client(OkHttpClient.Builder().addInterceptor { chain ->
                 val requestBuilder = chain.request().newBuilder()
-                    .addHeader("X-API-KEY", "c30d6e11-67cc-4643-8e20-b2cdff2799ef")
+                    .addHeader("X-API-KEY", X_API_KEY)
                 chain.proceed(requestBuilder.build())
             }.build())
             .build()
@@ -28,10 +29,12 @@ val retrofitPart = module {
     }
 }
 
+val dataSourcePart = module {
+    factory { RemoteAppDataSource(get()) }
+}
+
 val repositoryPart = module {
-    factory<AppDataSource> {
-        RemoteRepository(get())
-    }
+    factory { AppRepository(get()) }
 }
 
 val viewModelPart = module {
@@ -39,4 +42,4 @@ val viewModelPart = module {
 }
 
 
-val appModule = listOf(repositoryPart, repositoryPart, viewModelPart)
+val appModule = listOf(retrofitPart, dataSourcePart, repositoryPart, viewModelPart)

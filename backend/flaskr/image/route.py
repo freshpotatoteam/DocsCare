@@ -25,7 +25,7 @@ class Image(Resource):
 
     post_parser = api.parser()
     post_parser.add_argument('user_id', help='The user identifier', required=True)
-    post_parser.add_argument('docs_image', location='files')
+    post_parser.add_argument('docs_image', location='files', required=True)
     post_parser.add_argument('image_name', location='form')
 
     @api.doc('get_user_image_list_by_image_content_text')
@@ -54,15 +54,19 @@ class Image(Resource):
 
         file = request.files['docs_image']
 
-        if file.filename == "":
+        if file.filename == '':
             return abort(400, 'Please select a file')
 
         try:
             if file and allowed_file(file.filename):
-                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
                 file.filename = secure_filename(file.filename)
-                image_name = request.form['image_name'] or '{} {}'.format(file_name_prefix, now)
+
+                try:
+                    image_name = request.form['image_name']
+                except Exception as e:
+                    image_name = '{} {}'.format(file_name_prefix, now)
 
                 file.save(os.path.join(settings.UPLOAD_FOLDER, file.filename))
                 path = "./upload/{}".format(file.filename)

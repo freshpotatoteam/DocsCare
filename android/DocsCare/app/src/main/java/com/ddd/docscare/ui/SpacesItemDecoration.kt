@@ -1,7 +1,7 @@
 package com.ddd.docscare.ui
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 
 class SpacesItemDecoration(private val space: Int): RecyclerView.ItemDecoration() {

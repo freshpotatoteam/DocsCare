@@ -1,16 +1,14 @@
 package com.ddd.docscare.base
 
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.ActionBar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ddd.docscare.inject.Injection
+import androidx.appcompat.app.ActionBar
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 abstract class BaseFragment: ViewLifecycleFragment() {
 
@@ -36,11 +34,6 @@ abstract class BaseFragment: ViewLifecycleFragment() {
     fun dismissProgressForce() = mActivity.dismissProgressForce()
     fun hideKeyboard() = mActivity.hideKeyboard()
     fun showKeyboard(input: View) = mActivity.showKeyboard(input)
-
-    inline fun <reified T : BaseViewModel> getViewModel(): T {
-        val viewModelFactory = Injection.provideViewModelFactory()
-        return ViewModelProviders.of(this, viewModelFactory).get(T::class.java)
-    }
 
     fun <T> LiveData<T>.reObserve(owner: LifecycleOwner, observer: Observer<T>) {
         removeObserver(observer)

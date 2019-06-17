@@ -1,4 +1,4 @@
-package com.ddd.docscare.ui
+package com.ddd.docscare.model
 
 data class RecentlyUsedItem(
     val image: String = "",

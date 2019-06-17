@@ -1,10 +1,10 @@
 package com.ddd.docscare.ui
 
+import android.Manifest
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -13,8 +13,11 @@ import android.widget.EditText
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.model.RecentlyUsedItem
 import com.ddd.docscare.ui.folder.FolderFragment
 import com.ddd.docscare.util.onRightDrawableClicked
+import com.gun0912.tedpermission.PermissionListener
+import com.gun0912.tedpermission.TedPermission
 import kotlinx.android.synthetic.main.activity_recently_used_header_item.view.*
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
@@ -27,7 +30,22 @@ class Main : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
 
-        initLayout()
+        val permissionListener =  object: PermissionListener {
+            override fun onPermissionGranted() {
+                initLayout()
+            }
+
+            override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
+                println("permission denied")
+            }
+
+        }
+
+        TedPermission.with(this)
+            .setPermissionListener(permissionListener)
+            .setDeniedMessage("거절할 경우 세팅화면에서 수동으로 설정")
+            .setPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            .check()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
@@ -123,8 +141,8 @@ class Main : BaseActivity() {
                 )
             }
         }
-    }
 
-    class RecentlyUsedHeaderViewHolder(view: View): RecyclerView.ViewHolder(view)
-    class RecentlyUsedViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class RecentlyUsedHeaderViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class RecentlyUsedViewHolder(view: View): RecyclerView.ViewHolder(view)
+    }
 }

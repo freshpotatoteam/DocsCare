@@ -23,6 +23,11 @@ class Image(Resource):
     with_content_parser.add_argument('user_id', help='The user identifier', required=True)
     with_content_parser.add_argument('text', help='image content text', required=True)
 
+    post_parser = api.parser()
+    post_parser.add_argument('user_id', help='The user identifier', required=True)
+    post_parser.add_argument('docs_image', location='files')
+    post_parser.add_argument('image_name', location='form')
+
     @api.doc('get_user_image_list_by_image_content_text')
     @api.expect(with_content_parser, validate=True)
     @api.marshal_list_with(user_image)
@@ -39,6 +44,7 @@ class Image(Resource):
         return result
 
     @api.doc('post_image')
+    @api.expect(post_parser, validate=True)
     @api.marshal_with(user_image, code=201, description='Success User Image Insert')
     @token_required
     def post(self):

@@ -64,7 +64,7 @@ class Image(Resource):
                 file.filename = secure_filename(file.filename)
 
                 try:
-                    image_name = request.form['image_name']
+                    image_name = request.form['image_name'] or '{} {}'.format(file_name_prefix, now)
                 except Exception as e:
                     image_name = '{} {}'.format(file_name_prefix, now)
 

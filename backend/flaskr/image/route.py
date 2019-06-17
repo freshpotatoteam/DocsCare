@@ -74,12 +74,12 @@ class Image(Resource):
                 rec_string = process_image(path=path)
                 file.seek(0, 0)
                 source_image_output = upload_file_to_s3(file, settings.S3_SOURCE_FOLDER,
-                                                        settings.S3_SOURCE_IMAGE_LOCATION, settings.S3_BUCKET)
+                                                        settings.CLOUD_FRONT_SOURCE_IMAGE_LOCATION, settings.S3_BUCKET)
 
                 thumbnail_image_file = make_thumbnail_image(file)
                 thumbnail_image_file.seek(0, 0)
                 thumbnail_image_output = upload_file_to_s3(thumbnail_image_file, settings.S3_THUMBNAIL_FOLDER,
-                                                           settings.S3_THUMBNAIL_IMAGE_LOCATION, settings.S3_BUCKET)
+                                                           settings.CLOUD_FRONT_THUMBNAIL_IMAGE_LOCATION, settings.S3_BUCKET)
 
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

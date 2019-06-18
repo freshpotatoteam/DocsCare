@@ -8,3 +8,4 @@ pytesseract
 opencv-python
 tesseract
 pdf2image
+libmagic

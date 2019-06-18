@@ -1,7 +1,7 @@
 FROM python:3
 
 RUN apt-get update -y
-RUN apt-get install -y tesseract-ocr libtesseract-dev
+RUN apt-get install -y tesseract-ocr libtesseract-dev poppler-utils
 
 COPY . /app/backend
 WORKDIR /app/backend

@@ -1,3 +1,4 @@
+import io
 import os
 import urllib
 
@@ -19,13 +20,24 @@ TEMP_IMAGE_PATH = './upload/tmp.jpg'
 
 def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
     try:
-        # Key = folder name + file name
-        s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file)
+        s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file,
+                                          ContentType='image/' + file.filename.rsplit('.', 1)[1].lower())
     except Exception as e:
         print('Something Happened: ', e)
         return e
 
     return '{}{}'.format(location, file.filename)
+
+
+def upload_thumbnail_file_to_s3(byte, filename, folder, location, bucket_name, acl='public-read'):
+    try:
+        s3.Bucket(bucket_name).put_object(Key=folder + '/' + filename, Body=byte,
+                                          ContentType='image/jpeg')
+    except Exception as e:
+        print('Something Happened: ', e)
+        return e
+
+    return '{}{}'.format(location, filename)
 
 
 def process_image(url=None, path=None):
@@ -68,10 +80,17 @@ def allowed_file(filename):
 
 
 def make_thumbnail_image(file):
+    filename, ext = os.path.splitext(file.filename)
     image = Image.open(file)
-    thumbnail_image =  image.crop((0, 0, 200, 200))
-    thumbnail_image.save(file.filename)
-    return file
+
+    thumbnail_size = 128, 128
+    image.thumbnail(thumbnail_size)
+
+    in_mem_file = io.BytesIO()
+    image.save(in_mem_file, 'JPEG')
+    in_mem_file.filename = filename + '.thumbnail'
+    in_mem_file.seek(0)
+    return in_mem_file.getvalue(), in_mem_file.filename
 
 
 def chomp(str):

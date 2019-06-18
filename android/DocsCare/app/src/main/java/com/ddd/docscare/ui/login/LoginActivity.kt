@@ -11,7 +11,7 @@ import com.ddd.docscare.model.UserInfo
 import com.ddd.docscare.sns.KakaoLoginHelper
 import com.ddd.docscare.sns.NaverLoginHelper
 import com.ddd.docscare.sns.SnsLoginCallback
-import com.ddd.docscare.ui.Main
+import com.ddd.docscare.ui.main.Main
 import com.kakao.auth.Session
 import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

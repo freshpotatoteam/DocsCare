@@ -6,6 +6,7 @@ import boto3
 import cv2
 import numpy as np
 from PIL import Image
+from pdf2image import convert_from_path
 from pytesseract import image_to_string
 
 s3 = boto3.resource(
@@ -20,8 +21,12 @@ TEMP_IMAGE_PATH = './upload/tmp.jpg'
 
 def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
     try:
-        s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file,
-                                          ContentType='image/' + file.filename.rsplit('.', 1)[1].lower())
+        if file.filename.rsplit('.', 1)[1].lower() == 'pdf':
+            s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file,
+                                              ContentType='application/pdf')
+        else:
+            s3.Bucket(bucket_name).put_object(Key=folder + '/' + file.filename, Body=file,
+                                              ContentType='image/' + file.filename.rsplit('.', 1)[1].lower())
     except Exception as e:
         print('Something Happened: ', e)
         return e
@@ -66,6 +71,25 @@ def process_image(url=None, path=None):
     return rec_string
 
 
+def process_pdf(path=None):
+    image = None
+
+    # gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    # ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    #
+    # dst = cv2.fastNlMeansDenoising(th2, 10, 10, 7)
+    #
+    # cv2.imwrite(TEMP_IMAGE_PATH, dst)
+    # cao = Image.open(TEMP_IMAGE_PATH)
+
+    # os.remove(TEMP_IMAGE_PATH)
+
+    print("Recongizeing...")
+    # rec_string = image_to_string(cao, lang='eng+kor+chi_sim')
+
+    return 'test'
+
+
 def url_to_image(url):
     resp = urllib.urlopen(url)
     print(resp)
@@ -87,6 +111,21 @@ def make_thumbnail_image(file):
     image.thumbnail(thumbnail_size)
 
     in_mem_file = io.BytesIO()
+    image.save(in_mem_file, 'JPEG')
+    in_mem_file.filename = filename + '.thumbnail'
+    in_mem_file.seek(0)
+    return in_mem_file.getvalue(), in_mem_file.filename
+
+
+def make_thumbnail_pdf(file, file_path):
+    filename, ext = os.path.splitext(file.filename)
+    pages = convert_from_path(file_path, 200)
+    image = pages[0]
+
+    thumbnail_size = 128, 128
+    image.thumbnail(thumbnail_size)
+    in_mem_file = io.BytesIO()
+
     image.save(in_mem_file, 'JPEG')
     in_mem_file.filename = filename + '.thumbnail'
     in_mem_file.seek(0)

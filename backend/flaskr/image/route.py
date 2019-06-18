@@ -69,17 +69,25 @@ class Image(Resource):
                     image_name = '{} {}'.format(file_name_prefix, now)
 
                 file.save(os.path.join(settings.UPLOAD_FOLDER, file.filename))
-                path = "./upload/{}".format(file.filename)
-                print("file was uploaded in {} ".format(path))
-                rec_string = process_image(path=path)
+                path = './upload/{}'.format(file.filename)
+                print('file was uploaded in {} '.format(path))
+
                 file.seek(0, 0)
                 source_image_output = upload_file_to_s3(file, settings.S3_SOURCE_FOLDER,
                                                         settings.CLOUD_FRONT_SOURCE_IMAGE_LOCATION, settings.S3_BUCKET)
 
 
-                thumbnail_image_byte, thumbnail_image_filename  = make_thumbnail_image(file)
-                thumbnail_image_output = upload_thumbnail_file_to_s3(thumbnail_image_byte, thumbnail_image_filename, settings.S3_THUMBNAIL_FOLDER,
-                                                           settings.CLOUD_FRONT_THUMBNAIL_IMAGE_LOCATION, settings.S3_BUCKET)
+                if file.filename.rsplit('.', 1)[1].lower() == 'pdf':
+                    rec_string = process_pdf(path=path)
+                    thumbnail_image_byte, thumbnail_image_filename = make_thumbnail_pdf(file, path)
+                else:
+                    rec_string = process_image(path=path)
+                    thumbnail_image_byte, thumbnail_image_filename = make_thumbnail_image(file)
+
+                thumbnail_image_output = upload_thumbnail_file_to_s3(thumbnail_image_byte, thumbnail_image_filename,
+                                                                         settings.S3_THUMBNAIL_FOLDER,
+                                                                         settings.CLOUD_FRONT_THUMBNAIL_IMAGE_LOCATION,
+                                                                         settings.S3_BUCKET)
 
                 now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 

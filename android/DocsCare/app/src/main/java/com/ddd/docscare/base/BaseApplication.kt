@@ -20,15 +20,30 @@ class BaseApplication: MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin(this, appModule)
+        initPreference()
+        initKakao()
+        injectDependency()
+        showDebugKeyHash()
+    }
 
+    private fun initPreference() {
+        PP.CREATE(this)
+    }
+
+    private fun initKakao() {
         instance = this
-
-        val debugKeyHash = getKeyHash()
-        Log.d("Debug Key Hash", debugKeyHash)
-
         KakaoSDK.init(KakaoSdkAdapter())
     }
+
+    private fun injectDependency() {
+        startKoin(this, appModule)
+    }
+
+    private fun showDebugKeyHash() {
+        val debugKeyHash = getKeyHash()
+        Log.d("Debug Key Hash", debugKeyHash)
+    }
+
 
     @SuppressLint("WrongConstant")
     fun getKeyHash(): String? {

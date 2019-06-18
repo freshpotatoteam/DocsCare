@@ -20,6 +20,7 @@ import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.model.DocumentDetailItem
 import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import kotlinx.android.synthetic.main.activity_document_detail.*
 import kotlinx.android.synthetic.main.activity_document_detail_header_item.view.*
 import kotlinx.android.synthetic.main.activity_document_detail_item.view.*
@@ -170,9 +171,9 @@ class DocumentDetailActivity : BaseActivity() {
             }
         }
 
-        inner class DocDetailHeaderlViewHolder(view: View): RecyclerView.ViewHolder(view)
-        inner class DocDetailTitlelViewHolder(view: View): RecyclerView.ViewHolder(view)
-        inner class DocDetailViewHolder(view: View): RecyclerView.ViewHolder(view)
+        inner class DocDetailHeaderlViewHolder(view: View): AndroidExtensionsViewHolder(view)
+        inner class DocDetailTitlelViewHolder(view: View): AndroidExtensionsViewHolder(view)
+        inner class DocDetailViewHolder(view: View): AndroidExtensionsViewHolder(view)
     }
 
 

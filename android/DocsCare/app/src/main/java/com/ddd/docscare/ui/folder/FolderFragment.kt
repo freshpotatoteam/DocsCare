@@ -17,6 +17,7 @@ import com.ddd.docscare.base.BaseFragment
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.model.FolderItem
 import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.ddd.docscare.util.formatToServerDateTimeDefaults
 import kotlinx.android.synthetic.main.fragment_folder.*
 import kotlinx.android.synthetic.main.fragment_folder_item.view.*
@@ -136,7 +137,7 @@ class FolderFragment: BaseFragment() {
             folderStateMap[key] = v
         }
 
-        class FolderViewHolder(view: View): RecyclerView.ViewHolder(view)
+        class FolderViewHolder(view: View): AndroidExtensionsViewHolder(view)
     }
 
     companion object {

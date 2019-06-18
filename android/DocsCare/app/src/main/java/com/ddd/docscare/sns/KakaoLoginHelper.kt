@@ -26,10 +26,17 @@ class KakaoLoginHelper(private val activity: Activity,
         }
     }
 
-    fun startOAuth() {
+    init {
         Session.getCurrentSession().addCallback(sessionCallback)
         Session.getCurrentSession().checkAndImplicitOpen()
+    }
+
+    fun startOAuth() {
         Session.getCurrentSession().open(AuthType.KAKAO_LOGIN_ALL, activity)
+    }
+
+    fun removeCallback() {
+        Session.getCurrentSession().removeCallback(sessionCallback)
     }
 
     private fun requestMe() {

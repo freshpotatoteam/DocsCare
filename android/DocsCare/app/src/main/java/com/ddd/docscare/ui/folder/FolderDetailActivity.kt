@@ -21,24 +21,30 @@ import android.widget.Toast
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.base.BaseViewModel
 import com.ddd.docscare.common.IMAGE_FOLDER_PATH
 import com.ddd.docscare.common.PROVIDER
 import com.ddd.docscare.common.START_CAMERA_REQUEST_CODE
+import com.ddd.docscare.db.dto.RecentlyViewedItemDTO
 import com.ddd.docscare.model.FolderDetailItem
 import com.ddd.docscare.ui.SpacesItemDecoration
 import com.ddd.docscare.ui.document.DocumentDetailActivity
+import com.ddd.docscare.ui.main.RecentlyItemViewModel
 import com.ddd.docscare.ui.scan.ScanActivity
+import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_folder_detail.*
 import kotlinx.android.synthetic.main.activity_folder_detail_item.view.*
 import kotlinx.android.synthetic.main.bottom_navigation.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FolderDetailActivity : BaseActivity() {
 
-    private val adapter by lazy { FolderDetailAdapter(this) }
+    private val viewModel: RecentlyItemViewModel by viewModel()
+    private val adapter by lazy { FolderDetailAdapter(this, viewModel) }
     private var fileUri: Uri? = null
     private val sdf by lazy { SimpleDateFormat("yyyyMMdd_HHmmss") }
 
@@ -110,7 +116,7 @@ class FolderDetailActivity : BaseActivity() {
 
         // TODO 폴더안에 항목 리스트 상세보기 (bundle : 폴더경로/폴더이름/폴더고유값)
         for(i in 0..30) {
-            adapter.add(FolderDetailItem("test$i"))
+            adapter.add(FolderDetailItem("DocsCare_${i}_2019.06.03"))
         }
         adapter.notifyDataSetChanged()
 
@@ -166,7 +172,10 @@ class FolderDetailActivity : BaseActivity() {
             fileDescriptor?.fileDescriptor, null, options)
     }
 
-    class FolderDetailAdapter(private val context: Context): BaseRecyclerAdapter<FolderDetailItem, RecyclerView.ViewHolder>() {
+    class FolderDetailAdapter(private val context: Context,
+                              private val viewModel: BaseViewModel):
+        BaseRecyclerAdapter<FolderDetailItem, RecyclerView.ViewHolder>() {
+
         override fun onBindView(
             holder: RecyclerView.ViewHolder,
             item: FolderDetailItem,
@@ -175,7 +184,10 @@ class FolderDetailActivity : BaseActivity() {
             holder.itemView.tv_folder_detail_title.text = item.title
             holder.itemView.setOnClickListener {
                 //TODO 이미지 상세보기
-
+                (viewModel as RecentlyItemViewModel).insert(RecentlyViewedItemDTO(
+                    title = item.title,
+                    date = System.currentTimeMillis().toString()
+                ))
                 DocumentDetailActivity.startActivity(context, item.path)
             }
         }
@@ -190,6 +202,6 @@ class FolderDetailActivity : BaseActivity() {
             )
         }
 
-        inner class FolderDetailViewHolder(view: View): RecyclerView.ViewHolder(view)
+        inner class FolderDetailViewHolder(view: View): AndroidExtensionsViewHolder(view)
     }
 }

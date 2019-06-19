@@ -67,7 +67,7 @@ def process_image(url=None, path=None):
     os.remove(TEMP_IMAGE_PATH)
 
     print('Recongizeing...')
-    rec_string = image_to_string(cao, lang='eng+kor+chi_sim')
+    rec_string = image_to_string(cao, lang='eng+kor')
     return rec_string
 
 

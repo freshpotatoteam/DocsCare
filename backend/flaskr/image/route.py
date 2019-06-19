@@ -89,7 +89,6 @@ class Image(Resource):
                                                                          settings.CLOUD_FRONT_THUMBNAIL_IMAGE_LOCATION,
                                                                          settings.S3_BUCKET)
 
-                now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
                 # TODO 분류기를 이용한 카테고리 분류
                 category_id = classifi_category_by_image_string(rec_string)

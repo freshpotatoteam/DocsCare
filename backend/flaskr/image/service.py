@@ -66,28 +66,34 @@ def process_image(url=None, path=None):
 
     os.remove(TEMP_IMAGE_PATH)
 
-    print("Recongizeing...")
+    print('Recongizeing...')
     rec_string = image_to_string(cao, lang='eng+kor+chi_sim')
     return rec_string
 
 
 def process_pdf(path=None):
-    image = None
+    pages = convert_from_path(path, 200)
+    rec_string = ''
+    for index, page in enumerate(pages[:3]):
+        in_mem_file = io.BytesIO()
+        page.save(in_mem_file, 'JPEG')
 
-    # gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    # ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    #
-    # dst = cv2.fastNlMeansDenoising(th2, 10, 10, 7)
-    #
-    # cv2.imwrite(TEMP_IMAGE_PATH, dst)
-    # cao = Image.open(TEMP_IMAGE_PATH)
+        image = np.asarray(bytearray(in_mem_file.getvalue()), dtype="uint8")
+        image = cv2.imdecode(image, cv2.IMREAD_COLOR)
 
-    # os.remove(TEMP_IMAGE_PATH)
+        gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+        ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    print("Recongizeing...")
-    # rec_string = image_to_string(cao, lang='eng+kor+chi_sim')
+        dst = cv2.fastNlMeansDenoising(th2, 10, 10, 7)
 
-    return 'test'
+        cv2.imwrite(TEMP_IMAGE_PATH, dst)
+        cao = Image.open(TEMP_IMAGE_PATH)
+
+        os.remove(TEMP_IMAGE_PATH)
+        print('{}st image Recongizeing...'.format(index + 1))
+        rec_string += image_to_string(cao, lang='eng+kor+chi_sim') + '\n'
+
+    return rec_string
 
 
 def url_to_image(url):

@@ -74,7 +74,7 @@ def process_image(url=None, path=None):
 def process_pdf(path=None):
     pages = convert_from_path(path, 200)
     rec_string = ''
-    for index, page in enumerate(pages[:3]):
+    for index, page in enumerate(pages[:2]):
         in_mem_file = io.BytesIO()
         page.save(in_mem_file, 'JPEG')
 
@@ -91,7 +91,7 @@ def process_pdf(path=None):
 
         os.remove(TEMP_IMAGE_PATH)
         print('{}st image Recongizeing...'.format(index + 1))
-        rec_string += image_to_string(cao, lang='eng+kor+chi_sim') + '\n'
+        rec_string += image_to_string(cao, lang='eng+kor') + '\n'
 
     return rec_string
 

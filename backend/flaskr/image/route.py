@@ -63,6 +63,9 @@ class Image(Resource):
 
                 file.filename = secure_filename(file.filename)
 
+                if len(file.filename.rsplit('.', 1)) == 1:
+                    file.filename = 'temp-{}'.format(now) + '.' + file.filename.rsplit('.', 1)[0]
+
                 try:
                     image_name = request.form['image_name'] or '{} {}'.format(file_name_prefix, now)
                 except Exception as e:

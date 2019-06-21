@@ -8,8 +8,12 @@ import com.ddd.docscare.repository.RecentlyViewLocalDataSource
 import com.ddd.docscare.repository.RecentlyViewRepository
 import com.ddd.docscare.repository.login.LoginRemoteDataSource
 import com.ddd.docscare.repository.login.LoginRepository
+import com.ddd.docscare.repository.scan.ScanLocalDataSource
+import com.ddd.docscare.repository.scan.ScanRemoteDataSource
+import com.ddd.docscare.repository.scan.ScanRepository
 import com.ddd.docscare.ui.login.LoginViewModel
 import com.ddd.docscare.ui.main.RecentlyItemViewModel
+import com.ddd.docscare.ui.scan.ScanViewModel
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.ext.koin.viewModel
@@ -36,24 +40,27 @@ val retrofitPart = module {
 
 val databasePart = module {
     single {
-        DocsDatabase.getInstance(androidApplication())
+        DocsDatabase.getInstance(get())
     }
 }
 
 val dataSourcePart = module {
-    factory { LoginRemoteDataSource(get()) }
-    factory { RecentlyViewLocalDataSource((get() as DocsDatabase).recentlyViewedItemDAO()) }
-
+    single { LoginRemoteDataSource(get()) }
+    single { RecentlyViewLocalDataSource((get<DocsDatabase>().recentlyViewedItemDAO())) }
+    single { ScanLocalDataSource() }
+    single { ScanRemoteDataSource(get()) }
 }
 
 val repositoryPart = module {
-    factory { LoginRepository(get()) }
-    factory { RecentlyViewRepository(get()) }
+    single { LoginRepository(get()) }
+    single { RecentlyViewRepository(get()) }
+    single { ScanRepository(get(), get()) }
 }
 
 val viewModelPart = module {
     viewModel { LoginViewModel(get()) }
     viewModel { RecentlyItemViewModel(get()) }
+    viewModel { ScanViewModel(get()) }
 }
 
 

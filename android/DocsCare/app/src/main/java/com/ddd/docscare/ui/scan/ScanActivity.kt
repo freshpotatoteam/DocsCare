@@ -6,6 +6,8 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View.VISIBLE
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
@@ -27,13 +29,32 @@ class ScanActivity : BaseActivity() {
         initLayout()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_scan_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.activity_scan_menu_save -> {
+                // TODO 스캔된 이미지 Crop
+                // scan viewmodel
+                // do scan
+                // create image file to 미분류 폴더
+                // get uri
+                // send image file to server
+                // get category
+                // 미분류 -> 카테고리 이동
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun initToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_left_arrow)
-
-        //TODO 메뉴 추가
     }
 
     private fun initLayout() {
@@ -48,8 +69,13 @@ class ScanActivity : BaseActivity() {
             }
         }
 
-        // TODO 스캔된 이미지 Crop
-        // TODO 하단 버튼
+        imageRotate.setOnClickListener {
+            // sourceImageView get bitmap
+            // rotate
+            // sourceImageView set
+            // drawEdgePoints
+        }
+        fullImage.setOnClickListener {  }
     }
 
     private fun setBitmap(bitmap: Bitmap?) {

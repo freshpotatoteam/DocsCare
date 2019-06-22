@@ -48,7 +48,6 @@ def upload_thumbnail_file_to_s3(byte, filename, folder, location, bucket_name, a
 def process_image(url=None, path=None):
     image = None
 
-    # TODO PDF 처리 이슈
     if url != None:
         image = url_to_image(url)
     elif path != None:

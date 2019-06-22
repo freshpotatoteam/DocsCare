@@ -33,24 +33,6 @@ TEMP_IMAGE_PATH = './downloads/tmp.jpg'
 response = google_images_download.googleimagesdownload()
 
 
-def process_image(path=None):
-    image = cv2.imread(path)
-    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
-    ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-
-    dst = cv2.fastNlMeansDenoising(th2, 10, 10, 7)
-
-    cv2.imwrite(TEMP_IMAGE_PATH, dst)
-    cao = Image.open(TEMP_IMAGE_PATH)
-
-    os.remove(TEMP_IMAGE_PATH)
-
-    print('Recongizeing...')
-    ko_rec_string = image_to_string(cao, lang='kor')
-    en_rec_string = image_to_string(cao, lang='eng')
-    return ko_rec_string, en_rec_string
-
-
 def downloadimages(query):
     # keywords is the search query
     # format is the image file format
@@ -87,6 +69,23 @@ def downloadimages(query):
             return response.download(arguments)
         except:
             pass
+
+def process_image(path=None):
+    image = cv2.imread(path)
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
+    ret2, th2 = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    dst = cv2.fastNlMeansDenoising(th2, 10, 10, 7)
+
+    cv2.imwrite(TEMP_IMAGE_PATH, dst)
+    cao = Image.open(TEMP_IMAGE_PATH)
+
+    os.remove(TEMP_IMAGE_PATH)
+
+    print('Recongizeing...')
+    ko_rec_string = image_to_string(cao, lang='kor')
+    en_rec_string = image_to_string(cao, lang='eng')
+    return ko_rec_string, en_rec_string
 
 
 # Driver Code

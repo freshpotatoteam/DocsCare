@@ -32,7 +32,7 @@ TEMP_IMAGE_PATH = './downloads/tmp.jpg'
 # creating object
 response = google_images_download.googleimagesdownload()
 
-
+# Bulk image download
 def downloadimages(query):
     # keywords is the search query
     # format is the image file format
@@ -70,6 +70,7 @@ def downloadimages(query):
         except:
             pass
 
+# image OCR 처리
 def process_image(path=None):
     image = cv2.imread(path)
     gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)

@@ -94,8 +94,7 @@ class FolderDetailActivity : BaseActivity() {
     private fun initLayout() {
         folderDetailTitle.text = "커리어"
 
-        folderDetailRecyclerView.layoutManager =
-            LinearLayoutManager(this)
+        folderDetailRecyclerView.layoutManager = LinearLayoutManager(this)
         folderDetailRecyclerView.adapter = adapter
         folderDetailRecyclerView.addItemDecoration(
             SpacesItemDecoration(

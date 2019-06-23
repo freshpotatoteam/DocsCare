@@ -5,6 +5,7 @@ import cv2
 from PIL import Image
 from google_images_download import google_images_download
 from pytesseract import image_to_string
+from backend.model.data.process.text_preprocessing import *
 
 import backend.db as db
 import backend.settings as settings
@@ -84,9 +85,17 @@ def process_image(path=None):
     os.remove(TEMP_IMAGE_PATH)
 
     print('Recongizeing...')
-    ko_rec_string = image_to_string(cao, lang='kor')
-    en_rec_string = image_to_string(cao, lang='eng')
-    return ko_rec_string, en_rec_string
+    ko_ocr_string = image_to_string(cao, lang='kor')
+    en_ocr_string = image_to_string(cao, lang='eng')
+    print(ko_ocr_string, en_ocr_string)
+    return chomp(ko_ocr_string).replace(' ', ''), chomp(en_ocr_string)
+
+
+def chomp(str):
+    str = str.replace('\r', ',')
+    str = str.replace('\n', ',')
+
+    return str
 
 
 # Driver Code
@@ -104,10 +113,12 @@ for query_map in search_queries_map:
             if len(ko_rec_string) > 10:
                 # Todo 한국어 토크나이저 및 전처리
                 result += ko_rec_string
+                print(tokenizer(ko_rec_string, 'ko'))
 
             if len(en_rec_string) > 10:
                 # Todo 영어 토크나이저 및 전처리
                 result += en_rec_string
+                print(tokenizer(en_rec_string, 'en'))
 
 
             category_sample_data_document = {

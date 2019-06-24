@@ -37,6 +37,6 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="32dp"
         android:background="@drawable/image_button_round_corner"
-        android:src="@drawable/ic_add"/>
+        app:srcCompat="@drawable/ic_add"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

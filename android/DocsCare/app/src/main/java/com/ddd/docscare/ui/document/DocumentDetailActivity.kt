@@ -8,13 +8,10 @@ import android.os.Build
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.os.ParcelFileDescriptor.MODE_READ_ONLY
+import android.view.*
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
@@ -22,9 +19,7 @@ import com.ddd.docscare.model.DocumentDetailItem
 import com.ddd.docscare.ui.SpacesItemDecoration
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import kotlinx.android.synthetic.main.activity_document_detail.*
-import kotlinx.android.synthetic.main.activity_document_detail_header_item.view.*
 import kotlinx.android.synthetic.main.activity_document_detail_item.view.*
-import kotlinx.android.synthetic.main.activity_document_detail_title_item.view.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -37,8 +32,14 @@ class DocumentDetailActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_document_detail)
 
+        initToolbar()
         initLayout()
         loadPdfImages()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_document_detail_menu, menu)
+        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -46,28 +47,30 @@ class DocumentDetailActivity : BaseActivity() {
             android.R.id.home -> {
                 finish()
             }
+            R.id.activity_doc_detail_menu_merge -> {
+                Toast.makeText(this@DocumentDetailActivity, "Clicked..", Toast.LENGTH_SHORT).show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun initLayout() {
-        val gridLayoutManager = GridLayoutManager(this, 2)
-        gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when(adapter.getItemViewType(position)) {
-                    HEADER -> 2
-                    TITLE -> 2
-                    else -> 1
-                }
-            }
-        }
-        documentDetailRecyclerView.layoutManager = gridLayoutManager
+        documentDetailRecyclerView.layoutManager = GridLayoutManager(this, 2)
         documentDetailRecyclerView.adapter = adapter
         documentDetailRecyclerView.addItemDecoration(
             SpacesItemDecoration(
                 resources.getDimensionPixelSize(R.dimen.doc_detail_item_space)
             )
         )
+
+        documentDetailTitle.text = "Docs Care_ 2019.06.03"
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_left_arrow)
     }
 
     private fun loadPdfImages() {
@@ -75,8 +78,6 @@ class DocumentDetailActivity : BaseActivity() {
         imagePath = "/storage/emulated/0/pdffiles/tedt1.pdf"
 
         val items = ArrayList<DocumentDetailItem>()
-        items.add(DocumentDetailItem(type = HEADER, position = 0))
-        items.add(DocumentDetailItem(type = TITLE, position = 1, title = "Docs Care_ 2019.06.03"))
 
         try {
             val fileDescriptor = ParcelFileDescriptor.open(File(imagePath), MODE_READ_ONLY)
@@ -90,7 +91,7 @@ class DocumentDetailActivity : BaseActivity() {
                     )
 
                     page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
-                    items.add(DocumentDetailItem(bitmap, i+1, type = CONTENT))
+                    items.add(DocumentDetailItem(bitmap, i))
                     page.close()
                 }
                 renderer.close()
@@ -117,71 +118,24 @@ class DocumentDetailActivity : BaseActivity() {
             item: DocumentDetailItem,
             position: Int
         ) {
-            when(holder) {
-                is DocDetailHeaderlViewHolder -> {
-                    initToolbar(base, holder.itemView.toolbar)
-                }
-
-                is DocDetailTitlelViewHolder -> {
-                    holder.itemView.documentDetailTitle.text = item.title
-                }
-
-                is DocDetailViewHolder -> {
-                    val itemView = holder.itemView
-                    itemView.image.setImageBitmap(item.bitmap)
-                    itemView.imageNum.text = "${item.position}/${getItem().size - 2}"
-                }
-            }
+            val itemView = holder.itemView
+            itemView.image.setImageBitmap(item.bitmap)
+            itemView.imageNum.text = "${item.position + 1}/${getItem().size}"
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, type: Int): RecyclerView.ViewHolder {
-            return when(type) {
-                HEADER -> DocDetailHeaderlViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.activity_document_detail_header_item,
-                        parent,
-                        false
-                    )
-                )
-
-                TITLE -> DocDetailTitlelViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.activity_document_detail_title_item,
-                        parent,
-                        false
-                    )
-                )
-
-                else -> DocDetailViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.activity_document_detail_item,
-                        parent,
-                        false
-                    )
-                )
-            }
-
+            return DocDetailViewHolder(LayoutInflater.from(parent.context).inflate(
+                R.layout.activity_document_detail_item,
+                parent,
+                false
+            ))
         }
 
-        override fun getItemViewType(position: Int): Int {
-            return when(position) {
-                0 -> return HEADER
-                1 -> return TITLE
-                else -> CONTENT
-            }
-        }
-
-        inner class DocDetailHeaderlViewHolder(view: View): AndroidExtensionsViewHolder(view)
-        inner class DocDetailTitlelViewHolder(view: View): AndroidExtensionsViewHolder(view)
         inner class DocDetailViewHolder(view: View): AndroidExtensionsViewHolder(view)
     }
 
 
     companion object {
-
-        const val HEADER = 0
-        const val TITLE = 1
-        const val CONTENT = 2
 
         fun startActivity(context: Context, imagePath: String) {
             val bundle= Bundle()
@@ -192,13 +146,5 @@ class DocumentDetailActivity : BaseActivity() {
             context.startActivity(intent)
         }
 
-        fun initToolbar(base: BaseActivity, toolbar: Toolbar) {
-            base.setSupportActionBar(toolbar)
-            base.supportActionBar?.setDisplayShowTitleEnabled(false)
-            base.supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            base.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_left_arrow)
-
-            // TODO menu 추가
-        }
     }
 }

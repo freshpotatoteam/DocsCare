@@ -41,7 +41,7 @@ class FolderFragment: BaseFragment() {
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(
             SpacesItemDecoration(
-                resources.getDimensionPixelSize(R.dimen.folder_item_space)
+                resources.getDimensionPixelSize(R.dimen.folder_item_space), 3
             )
         )
 

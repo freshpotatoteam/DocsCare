@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -16,7 +15,7 @@ import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseFragment
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.model.FolderItem
-import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.ddd.docscare.util.formatToServerDateTimeDefaults
 import kotlinx.android.synthetic.main.fragment_folder.*

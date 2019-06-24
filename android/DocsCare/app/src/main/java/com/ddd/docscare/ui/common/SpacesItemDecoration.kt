@@ -1,4 +1,4 @@
-package com.ddd.docscare.ui
+package com.ddd.docscare.ui.common
 
 import android.graphics.Rect
 import android.view.View

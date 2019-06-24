@@ -36,6 +36,7 @@ class ScanActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
+            android.R.id.home -> { finish() }
             R.id.activity_scan_menu_save -> {
                 // TODO 스캔된 이미지 Crop
                 // scan viewmodel

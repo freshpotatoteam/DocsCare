@@ -62,7 +62,7 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <include layout="@layout/bottom_navigation"
+    <com.ddd.docscare.ui.common.BottomNavigationView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

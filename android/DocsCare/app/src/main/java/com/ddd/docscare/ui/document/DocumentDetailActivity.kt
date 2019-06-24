@@ -16,7 +16,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.model.DocumentDetailItem
-import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import kotlinx.android.synthetic.main.activity_document_detail.*
 import kotlinx.android.synthetic.main.activity_document_detail_item.view.*

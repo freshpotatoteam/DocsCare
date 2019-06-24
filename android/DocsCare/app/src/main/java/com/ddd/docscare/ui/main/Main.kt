@@ -1,6 +1,7 @@
 package com.ddd.docscare.ui.main
 
 import android.Manifest
+import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,10 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ddd.docscare.R
-import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseRecyclerAdapter
 import com.ddd.docscare.db.dto.RecentlyViewedItemDTO
-import com.ddd.docscare.ui.SpacesItemDecoration
+import com.ddd.docscare.ui.common.ActivityResultObservableActivity
+import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.ui.folder.FolderFragment
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.ddd.docscare.util.onRightDrawableClicked
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class Main : BaseActivity() {
+class Main : ActivityResultObservableActivity() {
 
     private val viewModel: RecentlyItemViewModel by viewModel()
     private val adapter by lazy { RecentlyUsedItemAdapter() }
@@ -51,6 +52,11 @@ class Main : BaseActivity() {
             .setDeniedMessage("거절할 경우 세팅화면에서 수동으로 설정")
             .setPermissions(Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .check()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        println("###main onActivityResult")
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {

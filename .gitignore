@@ -4,3 +4,4 @@ deploy
 *.pyc
 upload/
 *.pdf
+downloads/

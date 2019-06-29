@@ -1,10 +1,10 @@
 import shutil
 from datetime import datetime
+import requests
 
 import cv2
 from PIL import Image
 from google_images_download import google_images_download
-from pymongo import InsertOne
 from pytesseract import image_to_string
 
 import backend.db as db
@@ -53,7 +53,7 @@ def downloadimages(query):
     # of images to download. ('tall, square, wide, panoramic')
     arguments = {'keywords': query,
                  'format': 'jpg',
-                 'limit': 500,
+                 'limit': 10,
                  'print_urls': True,
                  'size': 'medium',
                  'aspect_ratio': 'panoramic',
@@ -65,7 +65,7 @@ def downloadimages(query):
     except FileNotFoundError:
         arguments = {'keywords': query,
                      'format': 'jpg',
-                     'limit': 500,
+                     'limit': 10,
                      'print_urls': True,
                      'size': 'medium',
                      'chromedriver': 'chromedriver'
@@ -94,10 +94,8 @@ def process_image(path=None):
     os.remove(TEMP_IMAGE_PATH)
 
     print('Recongizeing...')
-    ko_ocr_string = image_to_string(cao, lang='kor')
-    en_ocr_string = image_to_string(cao, lang='eng')
-    print(ko_ocr_string, en_ocr_string)
-    return chomp(ko_ocr_string).replace(' ', ''), chomp(en_ocr_string)
+    ocr_string = image_to_string(cao, lang='kor+eng')
+    return chomp(ocr_string).replace(' ', '')
 
 
 def chomp(str):
@@ -108,42 +106,28 @@ def chomp(str):
 
 
 # Driver Code
-
 for query_map in search_queries_map:
     category_id = list(query_map.keys())[0]
 
     for query in query_map[category_id]:
         image_paths = downloadimages(query)
-
-        requests = []
-
         for index, image_path in enumerate(image_paths[0][query]):
             print('[{}] - {}st image process'.format(query, index + 1))
-            try:
-                ko_rec_string, en_rec_string = process_image(path=image_path)
-            except Exception as e:
-                continue
+            rec_string = process_image(path=image_path)
 
-            if len(ko_rec_string) > 10:
-                requests.append(InsertOne({
-                    'category_id': category_id,
-                    'category_name': query_map[category_id][0],
-                    'query': query,
-                    'insert_datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'tokenizer_result': tokenizer(ko_rec_string, 'ko')
-                }))
+            doc2vec = requests.post('http://test-article-vector-api.ppd1.io.navercorp.com/api/embed/avg', data={
+                'doc': rec_string
+            }).json()['data']['doc2vec']
 
-            if len(en_rec_string) > 10:
-                requests.append(InsertOne({
-                    'category_id': category_id,
-                    'category_name': query_map[category_id][0],
-                    'query': query,
-                    'insert_datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'tokenizer_result': tokenizer(en_rec_string, 'en')
-                }))
+            category_sample_data_document = {
+                'category_id': category_id,
+                'insert_datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'doc2vec': doc2vec
+            }
 
-        print(requests)
-        docscare_db.categorySampleData.bulk_write(requests)
+            print(category_sample_data_document)
+
+            docscare_db.categorySampleData.insert_one(category_sample_data_document)
 
         shutil.rmtree('./downloads/{}'.format(query))
 

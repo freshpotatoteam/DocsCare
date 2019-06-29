@@ -113,7 +113,10 @@ for query_map in search_queries_map:
     category_id = list(query_map.keys())[0]
 
     for query in query_map[category_id]:
-        image_paths = downloadimages(query)
+        try:
+            image_paths = downloadimages(query)
+        except Exception as e:
+            continue
 
         requests = []
 

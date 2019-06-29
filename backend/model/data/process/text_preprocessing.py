@@ -30,7 +30,7 @@ def tokenizer(str, lang_type):
         word_tokens = okt.nouns(str)
 
         for w in word_tokens:
-            if w not in kr_stop_words:
+            if w not in kr_stop_words and len(w) >= 2:
                 result.append(w)
 
         return result

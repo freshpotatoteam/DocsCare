@@ -8,12 +8,13 @@ import settings as settings
 
 app = Flask(__name__)
 
-mongo_url = 'mongodb://{}:{}@{}:{}/{}?authSource=admin&ssl=true&readPreference=secondary'.format(
+mongo_url = 'mongodb://{}:{}@{}:{}/{}?authSource={}&ssl=true&readPreference=secondary'.format(
     settings.MONGO_USER,
     settings.MONGO_PASS,
     settings.MONGO_HOST,
     settings.MONGO_PORT,
-    settings.MONGO_DB)
+    settings.MONGO_DB,
+    settings.MONGO_AUTHSOURCE)
 
 mongo = db.init_app(mongo_url)
 docscare_db = mongo['docscare']

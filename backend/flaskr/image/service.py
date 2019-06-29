@@ -5,14 +5,15 @@ import urllib
 import boto3
 import cv2
 import numpy as np
+import settings as settings
 from PIL import Image
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
 
 s3 = boto3.resource(
     's3',
-    aws_access_key_id='AKIARTVYCVAX3ZTZHCPV',
-    aws_secret_access_key='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'
+    aws_access_key_id=settings.ACCESS_KEY_ID,
+    aws_secret_access_key=settings.SECRET_ACCESS_KEY
 )
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])

@@ -5,3 +5,4 @@ deploy
 upload/
 *.pdf
 downloads/
+settings.py

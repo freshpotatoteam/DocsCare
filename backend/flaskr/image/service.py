@@ -10,7 +10,7 @@ from PIL import Image
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
 from app import model
-from backend.model.data.process.text_preprocessing import tokenizer
+from model.data.process.text_preprocessing import tokenizer
 
 s3 = boto3.resource(
     's3',

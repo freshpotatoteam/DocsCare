@@ -35,12 +35,12 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintLeft_toLeftOf="@+id/vg1"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/noto_sans_cjk_kr_bold"
         android:textSize="20sp"
         android:textColor="#454545"
         android:text="@string/select_rect"/>
 
     <FrameLayout
-        android:id="@+id/sourceFrame"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@+id/imageScanTitle"
@@ -50,53 +50,58 @@
         android:layout_marginTop="13dp"
         android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/sourceImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true" />
-    </FrameLayout>
+        <FrameLayout
+            android:id="@+id/sourceFrame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="16dp">
 
-    <com.scanlibrary.PolygonView
-        android:id="@+id/polygonView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="@+id/sourceFrame"
-        app:layout_constraintBottom_toBottomOf="@+id/sourceFrame"
-        app:layout_constraintLeft_toLeftOf="@+id/sourceFrame"
-        app:layout_constraintRight_toRightOf="@+id/sourceFrame"
-        android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/sourceImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true" />
+        </FrameLayout>
+
+        <com.scanlibrary.PolygonView
+            android:id="@+id/polygonView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"/>
+
+    </FrameLayout>
 
     <Button
         android:id="@+id/imageRotate"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/fullImage"
         app:layout_constraintHorizontal_chainStyle="packed"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="8dp"
-        android:background="@drawable/rotate_image_button_round_corner"
+        android:background="#50e3c2"
         android:drawableLeft="@drawable/rotate_image_button_drawable_size"
-        android:paddingLeft="8dp"
+        android:paddingLeft="51dp"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium"
         android:text="@string/rotate"
         android:textColor="@color/white"
-        android:textSize="8sp"/>
+        android:textSize="15sp"/>
 
     <Button
         android:id="@+id/fullImage"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/imageRotate"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/full_rect_image_button_round_corner"
+        android:background="#ff8e8e"
         android:drawableLeft="@drawable/full_rect_image_button_drawable_size"
-        android:paddingLeft="8dp"
+        android:paddingLeft="51dp"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium"
         android:text="@string/full_rect"
         android:textColor="@color/white"
-        android:textSize="8sp"/>
+        android:textSize="15sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

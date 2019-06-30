@@ -5,6 +5,10 @@
     <color name="orange">#ffff900d</color>
     <color name="bottom_background_color">#ffc4c2bc</color>
 
+    <color name="greenish_cyan">#50e3c2</color>
+    <color name="greenishCircleBackground">#90ffffff</color>
+    <color name="greenishCircleStrokeColor">#ff50e3c2</color>
+
     <color name="polygonViewCircleStrokeColor">#ff59a9ff</color>
     <color name="polygonViewCircleBackground">#90e5f8ff</color>
 </resources>

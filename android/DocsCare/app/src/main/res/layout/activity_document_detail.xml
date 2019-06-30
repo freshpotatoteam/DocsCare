@@ -26,13 +26,24 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="16dp"/>
 
+        <ImageView
+            android:id="@+id/documentDetailIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toTopOf="@+id/documentDetailTitle"
+            app:layout_constraintBottom_toBottomOf="@+id/documentDetailTitle"
+            app:layout_constraintLeft_toLeftOf="@+id/vg1"
+            tools:src="@drawable/career"/>
+
         <TextView
             android:id="@+id/documentDetailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
-            app:layout_constraintLeft_toLeftOf="@+id/vg1"
+            app:layout_constraintLeft_toRightOf="@+id/documentDetailIcon"
             android:layout_marginTop="5dp"
+            android:layout_marginLeft="8dp"
+            android:fontFamily="@font/noto_sans_cjk_kr_bold"
             android:textSize="20sp"
             android:textColor="#454545"
             tools:text="Docs Care_ 2019.06.03"/>

@@ -94,7 +94,7 @@ class Image(Resource):
 
 
                 # TODO 분류기를 이용한 카테고리 분류
-                category_id = classifi_category_by_image_string(rec_string)
+                category_id = classifi_category_by_image_string(chomp(rec_string))
 
                 user_image_document = {
                     'user_id': request.args.get('user_id'),

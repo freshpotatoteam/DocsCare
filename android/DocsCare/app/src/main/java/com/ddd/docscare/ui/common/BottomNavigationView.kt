@@ -18,6 +18,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.common.IMAGE_FOLDER_PATH
 import com.ddd.docscare.common.PROVIDER
 import com.ddd.docscare.common.START_CAMERA_REQUEST_CODE
+import com.ddd.docscare.ui.main.Main
 import com.ddd.docscare.ui.scan.ScanActivity
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.bottom_navigation.view.*
@@ -90,10 +91,12 @@ class BottomNavigationView @JvmOverloads constructor(context: Context,
         }
 
         home.setOnClickListener {
-            Toast.makeText(context, "home button clicked.. ", Toast.LENGTH_SHORT).show()
+            context.startActivity(Intent(context, Main::class.java))
+            (context as AppCompatActivity).finish()
         }
 
         newFile.setOnClickListener {
+            // TODO Load image or pdf
             Toast.makeText(context, "newFile button clicked.. ", Toast.LENGTH_SHORT).show()
         }
     }

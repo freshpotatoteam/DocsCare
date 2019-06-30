@@ -4,17 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.LoginActivity">
+    android:background="#31c7a6">
+
+    <TextView
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/naverLogin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/logo"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginBottom="208dp"
+        android:layout_marginRight="8dp"
+        android:textSize="24sp"
+        android:textColor="#ffffff"
+        tools:text="Docs care" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@+id/loginTitle"
+        app:layout_constraintBottom_toBottomOf="@+id/loginTitle"
+        app:layout_constraintLeft_toRightOf="@+id/loginTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        android:src="@drawable/login_img_pill"/>
 
     <Button
         android:id="@+id/naverLogin"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginTitle"
         app:layout_constraintBottom_toTopOf="@+id/kakaoLogin"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_marginBottom="12dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/image_button_round_corner_white"
+        android:drawableLeft="@drawable/btn_login_naver"
+        android:paddingLeft="36dp"
+        android:paddingRight="60dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
         android:text="네이버 로그인"/>
 
     <Button
@@ -25,6 +59,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:background="@drawable/image_button_round_corner_white"
+        android:drawableLeft="@drawable/btn_login_kakao"
+        android:paddingLeft="36dp"
+        android:paddingRight="60dp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
         android:text="카카오 로그인"/>
 
 

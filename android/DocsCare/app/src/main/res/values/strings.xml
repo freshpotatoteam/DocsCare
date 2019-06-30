@@ -3,4 +3,6 @@
     <string name="select_rect">영역을 지정해주세요.</string>
     <string name="rotate">회전</string>
     <string name="full_rect">전면선택</string>
+    <string name="search_hint">검색어를 입력하세요</string>
+    <string name="main_image">main_image</string>
 </resources>

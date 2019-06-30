@@ -3,8 +3,8 @@
 
     <item
         android:drawable="@drawable/ic_rotate"
-        android:width="16dp"
-        android:height="16dp"
+        android:width="23dp"
+        android:height="20dp"
         />
 
 </layer-list >

@@ -13,6 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:fontFamily="@font/noto_sans_cjk_kr_bold"
         android:textColor="#4a4a4a"
         android:textSize="20sp"
         tools:text="최근문서"/>

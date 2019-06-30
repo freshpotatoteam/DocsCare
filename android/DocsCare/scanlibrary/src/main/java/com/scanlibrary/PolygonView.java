@@ -53,7 +53,7 @@ public class PolygonView extends FrameLayout {
 
     private void init() {
         polygonView = this;
-        pointer1 = getImageView(0, 0);
+        pointer1 = getImageView(100, 100);
         pointer2 = getImageView(getWidth(), 0);
         pointer3 = getImageView(0, getHeight());
         pointer4 = getImageView(getWidth(), getHeight());
@@ -69,12 +69,12 @@ public class PolygonView extends FrameLayout {
         midPointer24 = getImageView(0, getHeight() / 2);
         midPointer24.setOnTouchListener(new MidPointTouchListenerImpl(pointer2, pointer4));
 
-        addView(pointer1);
-        addView(pointer2);
         addView(midPointer13);
         addView(midPointer12);
         addView(midPointer34);
         addView(midPointer24);
+        addView(pointer1);
+        addView(pointer2);
         addView(pointer3);
         addView(pointer4);
         initPaint();
@@ -87,7 +87,7 @@ public class PolygonView extends FrameLayout {
 
     private void initPaint() {
         paint = new Paint();
-        paint.setColor(getResources().getColor(R.color.blue));
+        paint.setColor(getResources().getColor(R.color.greenish_cyan));
         paint.setStrokeWidth(2);
         paint.setAntiAlias(true);
     }
@@ -169,7 +169,7 @@ public class PolygonView extends FrameLayout {
         ImageView imageView = new ImageView(context);
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         imageView.setLayoutParams(layoutParams);
-        imageView.setImageResource(R.drawable.circle);
+        imageView.setImageResource(R.drawable.greenish_circle);
         imageView.setX(x);
         imageView.setY(y);
         imageView.setOnTouchListener(new TouchListenerImpl());
@@ -229,7 +229,7 @@ public class PolygonView extends FrameLayout {
                 case MotionEvent.ACTION_UP:
                     int color = 0;
                     if (isValidShape(getPoints())) {
-                        color = getResources().getColor(R.color.blue);
+                        color = getResources().getColor(R.color.greenish_cyan);
                     } else {
                         color = getResources().getColor(R.color.orange);
                     }
@@ -277,7 +277,7 @@ public class PolygonView extends FrameLayout {
                 case MotionEvent.ACTION_UP:
                     int color = 0;
                     if (isValidShape(getPoints())) {
-                        color = getResources().getColor(R.color.blue);
+                        color = getResources().getColor(R.color.greenish_cyan);
                     } else {
                         color = getResources().getColor(R.color.orange);
                     }

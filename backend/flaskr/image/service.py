@@ -4,13 +4,16 @@ import urllib
 
 import boto3
 import cv2
+import nltk
 import numpy as np
 import settings as settings
 from PIL import Image
+from app import model
+from konlpy.tag import Okt
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
-from app import model
-from model.data.process.text_preprocessing import tokenizer
 
 s3 = boto3.resource(
     's3',
@@ -29,6 +32,38 @@ category_map = {
     '여행': 'C5',
     '부동산': 'C6'
 }
+
+nltk.download('punkt')
+nltk.download('stopwords')
+ko_stop_words = set(stopwords.words('english'))
+en_stop_words = set(stopwords.words('english'))
+okt = Okt()
+
+script_dir = os.path.dirname(__file__)  # <-- absolute dir the script is in
+stopwordsFile = open(os.path.join(script_dir, '../stopword/ko_stopwords.txt'), 'r')
+kr_stop_words = [data for data in stopwordsFile.read().split()]
+
+
+def tokenizer(str, lang_type):
+    result = []
+
+    if lang_type == 'ko':
+        word_tokens = okt.nouns(str)
+
+        for w in word_tokens:
+            if w not in kr_stop_words and len(w) >= 2:
+                result.append(w)
+
+        return result
+    else:
+        word_tokens = word_tokenize(str)
+
+        for w in word_tokens:
+            if w not in en_stop_words and len(w) >= 4:
+                result.append(w.lower())
+
+        return result
+
 
 def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
     try:
@@ -124,7 +159,6 @@ def make_thumbnail_image(file):
     image = Image.open(file)
 
     if image.mode in ('RGBA', 'LA'):
-
         background = Image.new(image.mode[:-1], image.size)
         background.paste(image, image.split()[-1])
         image = background
@@ -163,4 +197,3 @@ def chomp(str):
 def classifi_category_by_image_string(str):
     inferred_vector = model.infer_vector(tokenizer(str, 'ko'))
     return category_map[model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))[0][0]]
-

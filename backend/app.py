@@ -5,6 +5,9 @@ from flask import Flask
 import db as db
 import flaskr as route
 import settings as settings
+from gensim.models.doc2vec import Doc2Vec
+
+
 
 app = Flask(__name__)
 
@@ -19,6 +22,8 @@ mongo_url = 'mongodb://{}:{}@{}:{}/{}?authSource={}&ssl=true&readPreference=seco
 mongo = db.init_app(mongo_url)
 docscare_db = mongo['docscare']
 
+# model load
+model = Doc2Vec.load("./model/save/d2v.model")
 
 def configure_app(app: Flask) -> None:
     app.config['SWAGGER_UI_DOC_EXPANSION'] = settings.SWAGGER_UI_DOC_EXPANSION

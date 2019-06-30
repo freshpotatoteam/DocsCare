@@ -9,6 +9,8 @@ import settings as settings
 from PIL import Image
 from pdf2image import convert_from_path
 from pytesseract import image_to_string
+from app import model
+from backend.model.data.process.text_preprocessing import tokenizer
 
 s3 = boto3.resource(
     's3',
@@ -19,6 +21,14 @@ s3 = boto3.resource(
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 TEMP_IMAGE_PATH = './upload/tmp.jpg'
 
+category_map = {
+    '커리어': 'C1',
+    '학업': 'C2',
+    '금융': 'C3',
+    '공공문서': 'C4',
+    '여행': 'C5',
+    '부동산': 'C6'
+}
 
 def upload_file_to_s3(file, folder, location, bucket_name, acl='public-read'):
     try:
@@ -113,6 +123,12 @@ def make_thumbnail_image(file):
     filename, ext = os.path.splitext(file.filename)
     image = Image.open(file)
 
+    if image.mode in ('RGBA', 'LA'):
+
+        background = Image.new(image.mode[:-1], image.size)
+        background.paste(image, image.split()[-1])
+        image = background
+
     thumbnail_size = 128, 128
     image.thumbnail(thumbnail_size)
 
@@ -145,4 +161,6 @@ def chomp(str):
 
 
 def classifi_category_by_image_string(str):
-    return str
+    inferred_vector = model.infer_vector(tokenizer(str, 'ko'))
+    return category_map[model.docvecs.most_similar([inferred_vector], topn=len(model.docvecs))[0][0]]
+

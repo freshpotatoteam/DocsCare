@@ -102,7 +102,7 @@ class Image(Resource):
                     'image_url': source_image_output,
                     'image_thumbnail_url': thumbnail_image_output,
                     'image_name': image_name,
-                    'category_id': 'C1',
+                    'category_id': category_id,
                     'insert_datetime': now,
                     'update_datetime': now,
                 }

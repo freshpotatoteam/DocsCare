@@ -8,19 +8,19 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.common.SELECTED_BITMAP
-import com.ddd.docscare.util.bitmapRotate
-import com.ddd.docscare.util.getEdgePoints
-import com.ddd.docscare.util.scaledBitmap
+import com.ddd.docscare.util.*
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_scan.*
 
 class ScanActivity : BaseActivity() {
 
     var image: Bitmap? = null
+    var canFull: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,14 +39,19 @@ class ScanActivity : BaseActivity() {
         when(item?.itemId) {
             android.R.id.home -> { finish() }
             R.id.activity_scan_menu_save -> {
-                // TODO 스캔된 이미지 Crop
-                // scan viewmodel
-                // do scan
-                // create image file to 미분류 폴더
-                // get uri
-                // send image file to server
-                // get category
-                // 미분류 -> 카테고리 이동
+
+                sourceFrame.post {
+                    val points = polygonView.points
+                    val scannedBitmap = getScannedBitmap(image!!, sourceImageView, points)
+                    sourceImageView.setImageBitmap(scannedBitmap)
+                    image?.recycle()
+                    polygonView.visibility = GONE
+                    //TODO 스캔된 이미지 파일 생성
+                    //TODO 스캔된 이미지 서버 전송
+                    //
+                    //TODO 서버 전송된 결과에서 카테고리 받기
+                    //TODO 스캔된 이미지 파일 DB insert
+                }
             }
         }
         return super.onOptionsItemSelected(item)
@@ -72,11 +77,26 @@ class ScanActivity : BaseActivity() {
         }
 
         imageRotate.setOnClickListener {
+            image = bitmapRotate(image!!)
+
             val rotatedBitmap = (sourceImageView.drawable as BitmapDrawable).bitmap
             sourceImageView.setImageBitmap(bitmapRotate(rotatedBitmap))
             drawEdgePoints()
         }
-        fullImage.setOnClickListener {  }
+
+        fullImage.setOnClickListener {
+            if(canFull) {
+                val tempBitmap = (sourceImageView.drawable as BitmapDrawable).bitmap
+                val pointFs = getOutlinePoints(tempBitmap)
+                polygonView.points = pointFs
+                polygonView.visibility = VISIBLE
+                polygonView.invalidate()
+            } else {
+                drawEdgePoints()
+            }
+
+            canFull = !canFull
+        }
     }
 
     private fun setBitmap(bitmap: Bitmap?) {

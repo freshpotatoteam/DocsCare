@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.PointF
 import android.graphics.RectF
+import android.widget.ImageView
 import com.scanlibrary.PolygonView
 import com.scanlibrary.ScanActivity
 import java.util.*
@@ -64,6 +65,24 @@ fun getOutlinePoints(tempBitmap: Bitmap): Map<Int, PointF> {
     outlinePoints[2] = PointF(0f, tempBitmap.height.toFloat())
     outlinePoints[3] = PointF(tempBitmap.width.toFloat(), tempBitmap.height.toFloat())
     return outlinePoints
+}
+
+
+fun getScannedBitmap(original: Bitmap, imageView: ImageView, points: Map<Int, PointF>): Bitmap {
+    val width = original.width
+    val height = original.height
+    val xRatio = original.width.toFloat() / imageView.width
+    val yRatio = original.height.toFloat() / imageView.height
+
+    val x1 = points.getValue(0).x * xRatio
+    val x2 = points.getValue(1).x * xRatio
+    val x3 = points.getValue(2).x * xRatio
+    val x4 = points.getValue(3).x * xRatio
+    val y1 = points.getValue(0).y * yRatio
+    val y2 = points.getValue(1).y * yRatio
+    val y3 = points.getValue(2).y * yRatio
+    val y4 = points.getValue(3).y * yRatio
+    return ScanActivity().getScannedBitmap(original, x1, y1, x2, y2, x3, y3, x4, y4)
 }
 
 

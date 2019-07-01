@@ -9,3 +9,6 @@ opencv-python
 tesseract
 pdf2image
 libmagic
+gensim
+nltk
+konlpy

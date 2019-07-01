@@ -11,6 +11,7 @@ enum class PP {
     ACCESS_TOKEN,
     REFRESH_TOKEN,
     USER_ID,
+    FOLDER_NUM,  // 새폴더 num
     ;
 
     companion object {

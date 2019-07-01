@@ -5,14 +5,20 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ddd.docscare.db.DocsDatabase.Companion.DATABASE_VERSION
+import com.ddd.docscare.db.dao.FileItemDAO
+import com.ddd.docscare.db.dao.FolderItemDAO
 import com.ddd.docscare.db.dao.RecentlyViewedItemDAO
+import com.ddd.docscare.db.dto.FileItemDTO
+import com.ddd.docscare.db.dto.FolderItemDTO
 import com.ddd.docscare.db.dto.RecentlyViewedItemDTO
 import java.util.concurrent.Executors
 
-@Database(entities = [RecentlyViewedItemDTO::class], version = DATABASE_VERSION)
+@Database(entities = [RecentlyViewedItemDTO::class, FolderItemDTO::class, FileItemDTO::class], version = DATABASE_VERSION)
 abstract class DocsDatabase: RoomDatabase() {
 
     abstract fun recentlyViewedItemDAO(): RecentlyViewedItemDAO
+    abstract fun folderItemDAO(): FolderItemDAO
+    abstract fun fileItemDAO(): FileItemDAO
 
     companion object {
         const val DATABASE_VERSION = 1

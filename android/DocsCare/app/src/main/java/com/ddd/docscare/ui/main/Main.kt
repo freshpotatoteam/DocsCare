@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.lifecycle.Observer
@@ -14,10 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.common.DEFAULT_FOLDER_LIST
+import com.ddd.docscare.common.DOCS_FOLDER_PATH
+import com.ddd.docscare.db.dto.FolderItemDTO
 import com.ddd.docscare.db.dto.RecentlyViewedItemDTO
 import com.ddd.docscare.ui.common.ActivityResultObservableActivity
 import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.ui.folder.FolderFragment
+import com.ddd.docscare.ui.folder.FolderViewModel
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.ddd.docscare.util.onRightDrawableClicked
 import com.gun0912.tedpermission.PermissionListener
@@ -26,10 +32,13 @@ import kotlinx.android.synthetic.main.activity_recently_used_header_item.view.*
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+import java.lang.Exception
 
 class Main : ActivityResultObservableActivity() {
 
     private val viewModel: RecentlyItemViewModel by viewModel()
+    private val folderViewModel: FolderViewModel by viewModel()
     private val adapter by lazy { RecentlyUsedItemAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +48,7 @@ class Main : ActivityResultObservableActivity() {
         val permissionListener =  object: PermissionListener {
             override fun onPermissionGranted() {
                 initLayout()
+                createDefaultFolder()
             }
 
             override fun onPermissionDenied(deniedPermissions: MutableList<String>?) {
@@ -100,8 +110,38 @@ class Main : ActivityResultObservableActivity() {
             //TODO 폴더 및 파일 검색 (Rx 사용, debounce)
         }
 
-
+        setScrollEvent()
         loadRecentlyViewedItem()
+    }
+
+    private fun createDefaultFolder() {
+        val rootFolder = File(DOCS_FOLDER_PATH)
+        try {
+            if (rootFolder.mkdir()) {
+                for (folderInfo in DEFAULT_FOLDER_LIST) {
+                    val isSuccess = File(folderInfo.first).mkdir()
+                    if (isSuccess)
+                        folderViewModel.insert(
+                            FolderItemDTO(
+                                path = folderInfo.first,
+                                title = folderInfo.second,
+                                resourceId = folderInfo.third
+                            )
+                        )
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun setScrollEvent() {
+        nestedScrollView.setScrollListener {
+            when(it) {
+                RecyclerView.SCROLL_STATE_DRAGGING -> { bottomNavigationView.visibility = GONE }
+                RecyclerView.SCROLL_STATE_IDLE -> { bottomNavigationView.visibility = VISIBLE }
+            }
+        }
     }
 
     private fun loadRecentlyViewedItem() {

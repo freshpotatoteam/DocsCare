@@ -12,6 +12,7 @@ import android.view.View.VISIBLE
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.common.SELECTED_BITMAP
+import com.ddd.docscare.util.bitmapRotate
 import com.ddd.docscare.util.getEdgePoints
 import com.ddd.docscare.util.scaledBitmap
 import com.scanlibrary.Utils
@@ -71,10 +72,9 @@ class ScanActivity : BaseActivity() {
         }
 
         imageRotate.setOnClickListener {
-            // sourceImageView get bitmap
-            // rotate
-            // sourceImageView set
-            // drawEdgePoints
+            val rotatedBitmap = (sourceImageView.drawable as BitmapDrawable).bitmap
+            sourceImageView.setImageBitmap(bitmapRotate(rotatedBitmap))
+            drawEdgePoints()
         }
         fullImage.setOnClickListener {  }
     }
@@ -90,6 +90,7 @@ class ScanActivity : BaseActivity() {
         val pointFs = getEdgePoints(polygonView, tempBitmap)
         polygonView.points = pointFs
         polygonView.visibility = VISIBLE
+        polygonView.invalidate()
     }
 
     companion object {

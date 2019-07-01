@@ -65,3 +65,14 @@ fun getOutlinePoints(tempBitmap: Bitmap): Map<Int, PointF> {
     outlinePoints[3] = PointF(tempBitmap.width.toFloat(), tempBitmap.height.toFloat())
     return outlinePoints
 }
+
+
+/**
+ * Image Rotate
+ */
+var degree = 0f
+fun bitmapRotate(src: Bitmap): Bitmap {
+    val matrix = Matrix()
+    matrix.postRotate(degree + 90)
+    return Bitmap.createBitmap(src, 0, 0, src.width, src.height, matrix, true)
+}

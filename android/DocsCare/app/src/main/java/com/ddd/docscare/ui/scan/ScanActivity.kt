@@ -8,18 +8,29 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.lifecycle.Observer
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
+import com.ddd.docscare.base.PP
 import com.ddd.docscare.common.SELECTED_BITMAP
-import com.ddd.docscare.util.getEdgePoints
-import com.ddd.docscare.util.scaledBitmap
+import com.ddd.docscare.util.*
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_scan.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+
 
 class ScanActivity : BaseActivity() {
 
     var image: Bitmap? = null
+    var canFull: Boolean = true
+    private lateinit var tempFile: File
+    private val scanViewModel: ScanViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +38,7 @@ class ScanActivity : BaseActivity() {
 
         initToolbar()
         initLayout()
+        observeScanResult()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -38,17 +50,39 @@ class ScanActivity : BaseActivity() {
         when(item?.itemId) {
             android.R.id.home -> { finish() }
             R.id.activity_scan_menu_save -> {
-                // TODO 스캔된 이미지 Crop
-                // scan viewmodel
-                // do scan
-                // create image file to 미분류 폴더
-                // get uri
-                // send image file to server
-                // get category
-                // 미분류 -> 카테고리 이동
+
+                sourceFrame.post {
+                    val points = polygonView.points
+                    val scannedBitmap = getScannedBitmap(image!!, sourceImageView, points)
+                    sourceImageView.setImageBitmap(scannedBitmap)
+                    image?.recycle()
+                    polygonView.visibility = GONE
+
+                    // bitmap to tempFile
+                    val tempPath = saveBitmapToFile(this, scannedBitmap, System.currentTimeMillis().toString())
+                    tempFile = File(tempPath)
+
+                    // send image to server
+                    val userId = PP.USER_ID.getString()
+                    if(!userId.isNullOrEmpty()) {
+                        val fileReqBody = RequestBody.create(MediaType.parse("image/png"), tempFile)
+                        val part =
+                            MultipartBody.Part.createFormData("docs_image", tempFile.name, fileReqBody)
+                        scanViewModel.uploadImage(userId, part, tempFile.name)
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun observeScanResult() {
+        scanViewModel.imageResponse.observe(this, Observer {
+            println("############ category : ${it.category_id}")
+
+            // TODO tempfile 경로, 카테고리 정보
+            //TODO 스캔된 이미지 파일 DB insert
+        })
     }
 
     private fun initToolbar() {
@@ -71,12 +105,26 @@ class ScanActivity : BaseActivity() {
         }
 
         imageRotate.setOnClickListener {
-            // sourceImageView get bitmap
-            // rotate
-            // sourceImageView set
-            // drawEdgePoints
+            image = bitmapRotate(image!!)
+
+            val rotatedBitmap = (sourceImageView.drawable as BitmapDrawable).bitmap
+            sourceImageView.setImageBitmap(bitmapRotate(rotatedBitmap))
+            drawEdgePoints()
         }
-        fullImage.setOnClickListener {  }
+
+        fullImage.setOnClickListener {
+            if(canFull) {
+                val tempBitmap = (sourceImageView.drawable as BitmapDrawable).bitmap
+                val pointFs = getOutlinePoints(tempBitmap)
+                polygonView.points = pointFs
+                polygonView.visibility = VISIBLE
+                polygonView.invalidate()
+            } else {
+                drawEdgePoints()
+            }
+
+            canFull = !canFull
+        }
     }
 
     private fun setBitmap(bitmap: Bitmap?) {
@@ -90,6 +138,7 @@ class ScanActivity : BaseActivity() {
         val pointFs = getEdgePoints(polygonView, tempBitmap)
         polygonView.points = pointFs
         polygonView.visibility = VISIBLE
+        polygonView.invalidate()
     }
 
     companion object {

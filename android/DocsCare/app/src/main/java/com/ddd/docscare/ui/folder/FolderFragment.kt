@@ -3,29 +3,35 @@ package com.ddd.docscare.ui.folder
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.BaseFragment
 import com.ddd.docscare.base.BaseRecyclerAdapter
-import com.ddd.docscare.model.FolderItem
+import com.ddd.docscare.base.PP
+import com.ddd.docscare.common.DOCS_FOLDER_PATH
+import com.ddd.docscare.db.dto.FolderItemDTO
 import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
-import com.ddd.docscare.util.formatToServerDateTimeDefaults
+import com.ddd.docscare.util.GlideApp
+import com.ddd.docscare.util.doAsync
 import kotlinx.android.synthetic.main.fragment_folder.*
 import kotlinx.android.synthetic.main.fragment_folder_item.view.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
 import java.util.*
 
 class FolderFragment: BaseFragment() {
 
     override val layoutId: Int = R.layout.fragment_folder
-    private val adapter by lazy { FolderAdapter(requireContext()) }
+    private val folderViewModel: FolderViewModel by viewModel()
+    private val adapter by lazy { FolderAdapter(requireContext(), folderViewModel) }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -35,8 +41,7 @@ class FolderFragment: BaseFragment() {
 
     private fun initLayout() {
         recyclerView.adapter = adapter
-        recyclerView.layoutManager =
-            GridLayoutManager(requireContext(), 3)
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.addItemDecoration(
             SpacesItemDecoration(
@@ -44,33 +49,46 @@ class FolderFragment: BaseFragment() {
             )
         )
 
+        addDefaultFolder()
+
         btnAddFolder.setOnClickListener {
-            val tempFolderTitle = Date(System.currentTimeMillis()).formatToServerDateTimeDefaults()
-            adapter.add(FolderItem(title = "Doc_$tempFolderTitle"))
-            adapter.setFolderState("Doc_$tempFolderTitle", false)
+            val folderNum = PP.FOLDER_NUM.getInt()
+            val newFolder = "새폴더(${folderNum + 1})"
+            PP.FOLDER_NUM.set(folderNum + 1)
+            adapter.add(FolderItemDTO(title = newFolder, resourceId = R.drawable.pill))
+            adapter.setFolderState(newFolder, false)
             adapter.notifyDataSetChanged()
         }
+    }
 
-        val categories = resources.getStringArray(R.array.category)
-        for(category in categories) {
-            adapter.add(FolderItem(title = category))
-            adapter.setFolderState(category, true)
-        }
-        adapter.notifyDataSetChanged()
+    private fun addDefaultFolder() {
+        folderViewModel.foldersResponse.observe(this, androidx.lifecycle.Observer {
+            adapter.removeAll()
+            adapter.addAll(it)
+            adapter.notifyDataSetChanged()
+        })
+        folderViewModel.select()
     }
 
 
-    class FolderAdapter(private val context: Context): BaseRecyclerAdapter<FolderItem, FolderAdapter.FolderViewHolder>() {
+    class FolderAdapter(private val context: Context,
+                        private val folderViewModel: FolderViewModel): BaseRecyclerAdapter<FolderItemDTO, FolderAdapter.FolderViewHolder>() {
 
         private val folderStateMap: HashMap<String, Boolean> by lazy { HashMap<String, Boolean>() }
 
         override fun onBindView(
             holder: FolderViewHolder,
-            item: FolderItem,
+            item: FolderItemDTO,
             position: Int
         ) {
             val holderView = holder.itemView
 
+            // image
+            GlideApp.with(context)
+                .load(item.resourceId)
+                .into(holderView.iv_folder_icon)
+
+            // title
             holderView.tv_folder_title.setText(item.title)
 
             folderStateMap[item.title]?.let {
@@ -79,6 +97,12 @@ class FolderFragment: BaseFragment() {
                 } else {
                     holderView.iv_folder_cancel.visibility = VISIBLE
                     holderView.iv_folder_cancel.setOnClickListener {
+                        doAsync {
+                            val file = File("$DOCS_FOLDER_PATH/${holderView.tv_folder_title.text}")
+                            file.deleteRecursively()
+                            //TODO remove folder item from db table
+                        }
+
                         remove(item)
                         notifyItemRemoved(holder.adapterPosition)
                         notifyItemRangeChanged(holder.adapterPosition, itemCount)
@@ -98,7 +122,12 @@ class FolderFragment: BaseFragment() {
                             folderStateMap.remove(old)
                             setFolderState(holderView.tv_folder_title.text.toString(), true)
 
-                            //TODO #BACKGROUND  1. title로 폴더만들기  2. 폴더-폴더ID DB 연동
+                            doAsync {
+                                val file = File("$DOCS_FOLDER_PATH/${holderView.tv_folder_title.text}")
+                                file.mkdir()
+                                item.path = file.absolutePath
+                                folderViewModel.insert(item)
+                            }
 
                             notifyItemChanged(holder.adapterPosition)
                         }

@@ -28,6 +28,10 @@ class BaseApplication: MultiDexApplication() {
 
     private fun initPreference() {
         PP.CREATE(this)
+
+        if(PP.FOLDER_NUM.getInt() == -1) {
+            PP.FOLDER_NUM.set(0)
+        }
     }
 
     private fun initKakao() {

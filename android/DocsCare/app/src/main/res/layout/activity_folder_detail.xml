@@ -15,7 +15,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:scrollbars="none"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:descendantFocusability="blocksDescendants">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

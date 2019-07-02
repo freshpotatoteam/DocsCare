@@ -6,6 +6,7 @@ import com.ddd.docscare.model.UserInfo
 import io.reactivex.Observable
 import io.reactivex.Single
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.*
 
 interface ApiService {
@@ -15,7 +16,9 @@ interface ApiService {
      */
     @Multipart
     @POST("/images")
-    fun updateImage(@Part file: MultipartBody.Part)
+    fun uploadImage(@Part("user_id") user_id: String,
+                    @Part file: MultipartBody.Part,
+                    @Part("image_name") image_name: String ): Single<ImageResponse>
 
     @GET("/images")
     fun getImages(@Field("user_id") user_id: String,

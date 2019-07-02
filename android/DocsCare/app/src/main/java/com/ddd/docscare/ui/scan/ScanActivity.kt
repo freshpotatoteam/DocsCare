@@ -10,17 +10,27 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.lifecycle.Observer
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
+import com.ddd.docscare.base.PP
 import com.ddd.docscare.common.SELECTED_BITMAP
 import com.ddd.docscare.util.*
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_scan.*
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.File
+
 
 class ScanActivity : BaseActivity() {
 
     var image: Bitmap? = null
     var canFull: Boolean = true
+    private lateinit var tempFile: File
+    private val scanViewModel: ScanViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +38,7 @@ class ScanActivity : BaseActivity() {
 
         initToolbar()
         initLayout()
+        observeScanResult()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -46,15 +57,32 @@ class ScanActivity : BaseActivity() {
                     sourceImageView.setImageBitmap(scannedBitmap)
                     image?.recycle()
                     polygonView.visibility = GONE
-                    //TODO 스캔된 이미지 파일 생성
-                    //TODO 스캔된 이미지 서버 전송
-                    //
-                    //TODO 서버 전송된 결과에서 카테고리 받기
-                    //TODO 스캔된 이미지 파일 DB insert
+
+                    // bitmap to tempFile
+                    val tempPath = saveBitmapToFile(this, scannedBitmap, System.currentTimeMillis().toString())
+                    tempFile = File(tempPath)
+
+                    // send image to server
+                    val userId = PP.USER_ID.getString()
+                    if(!userId.isNullOrEmpty()) {
+                        val fileReqBody = RequestBody.create(MediaType.parse("image/png"), tempFile)
+                        val part =
+                            MultipartBody.Part.createFormData("docs_image", tempFile.name, fileReqBody)
+                        scanViewModel.uploadImage(userId, part, tempFile.name)
+                    }
                 }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun observeScanResult() {
+        scanViewModel.imageResponse.observe(this, Observer {
+            println("############ category : ${it.category_id}")
+
+            // TODO tempfile 경로, 카테고리 정보
+            //TODO 스캔된 이미지 파일 DB insert
+        })
     }
 
     private fun initToolbar() {

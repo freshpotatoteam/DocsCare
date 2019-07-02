@@ -31,7 +31,7 @@ name = re.compile(r'.*[a-zA-Z].*')
 # for document in cursor:
 
 tagged_data = [TaggedDocument(words=_d['tokenizer_result'], tags=[category_map[_d['category_id']]]) for i, _d in
-               enumerate(cursor) if (len(_d['tokenizer_result']) > 1 and not name.match(_d['tokenizer_result'][0])) ]
+               enumerate(cursor) if (len(_d['tokenizer_result']) > 1 and not name.match(_d['tokenizer_result'][0]))]
 
 
 # max_epchs만큼 끊어서 학습(bacth 처리용)

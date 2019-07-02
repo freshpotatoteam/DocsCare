@@ -132,6 +132,8 @@ for query_map in search_queries_map:
                     'category_id': category_id,
                     'category_name': query_map[category_id][0],
                     'query': query,
+                    'type': 'ko',
+                    'raw': ko_rec_string,
                     'insert_datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'tokenizer_result': tokenizer(ko_rec_string, 'ko')
                 }))
@@ -141,6 +143,8 @@ for query_map in search_queries_map:
                     'category_id': category_id,
                     'category_name': query_map[category_id][0],
                     'query': query,
+                    'type': 'en',
+                    'raw': en_rec_string,
                     'insert_datetime': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'tokenizer_result': tokenizer(en_rec_string, 'en')
                 }))

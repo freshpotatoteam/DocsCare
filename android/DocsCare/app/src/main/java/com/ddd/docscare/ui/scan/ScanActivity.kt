@@ -15,6 +15,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.PP
 import com.ddd.docscare.common.SELECTED_BITMAP
+import com.ddd.docscare.ui.ResultDialogFragment
 import com.ddd.docscare.util.*
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_scan.*
@@ -82,6 +83,8 @@ class ScanActivity : BaseActivity() {
 
             // TODO tempfile 경로, 카테고리 정보
             //TODO 스캔된 이미지 파일 DB insert
+            val dialog = ResultDialogFragment.getInstance()
+            dialog.show(supportFragmentManager, "ResultDialogFragment")
         })
     }
 

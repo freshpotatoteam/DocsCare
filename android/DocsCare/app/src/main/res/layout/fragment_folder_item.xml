@@ -41,6 +41,7 @@
             android:focusableInTouchMode="false"
             android:background="@color/transparent"
             android:fontFamily="@font/noto_sans_cjk_kr_medium"
+            android:includeFontPadding="false"
             android:textColor="#5b5b5b"
             android:textSize="13sp"
             tools:text="공공문서"/>

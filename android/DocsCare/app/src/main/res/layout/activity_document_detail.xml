@@ -45,6 +45,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginLeft="8dp"
             android:fontFamily="@font/noto_sans_cjk_kr_bold"
+            android:includeFontPadding="false"
             android:textSize="20sp"
             android:textColor="#454545"
             tools:text="Docs Care_ 2019.06.03"/>

@@ -15,7 +15,7 @@ import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseActivity
 import com.ddd.docscare.base.PP
 import com.ddd.docscare.common.SELECTED_BITMAP
-import com.ddd.docscare.ui.ResultDialogFragment
+import com.ddd.docscare.ui.result.ResultDialogFragment
 import com.ddd.docscare.util.*
 import com.scanlibrary.Utils
 import kotlinx.android.synthetic.main.activity_scan.*
@@ -70,6 +70,7 @@ class ScanActivity : BaseActivity() {
                         val part =
                             MultipartBody.Part.createFormData("docs_image", tempFile.name, fileReqBody)
                         scanViewModel.uploadImage(userId, part, tempFile.name)
+                        showProgress()
                     }
                 }
             }
@@ -79,12 +80,19 @@ class ScanActivity : BaseActivity() {
 
     private fun observeScanResult() {
         scanViewModel.imageResponse.observe(this, Observer {
-            println("############ category : ${it.category_id}")
 
-            // TODO tempfile 경로, 카테고리 정보
-            //TODO 스캔된 이미지 파일 DB insert
-            val dialog = ResultDialogFragment.getInstance()
+            dismissProgress()
+            val dialog = ResultDialogFragment.getInstance(
+                it.category_id,
+                tempFile.absolutePath
+            )
+            println("#### category : ${it.category_id}")
+            println("#### image_text : ${it.image_text}")
             dialog.show(supportFragmentManager, "ResultDialogFragment")
+            supportFragmentManager.executePendingTransactions()
+            dialog.dialog.setOnDismissListener {
+                finish()
+            }
         })
     }
 
@@ -101,9 +109,12 @@ class ScanActivity : BaseActivity() {
         sourceFrame.post {
             uri?.let {
                 image = Utils.getBitmap(this, it)
-                contentResolver.delete(it, null, null)
-                setBitmap(image)
-                drawEdgePoints()
+                image?.let { bitmap ->
+                    image = bitmapRotate(bitmap)
+                    contentResolver.delete(uri, null, null)
+                    setBitmap(image)
+                    drawEdgePoints()
+                }
             }
         }
 

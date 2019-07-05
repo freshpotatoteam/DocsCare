@@ -124,7 +124,7 @@ class BottomNavigationView @JvmOverloads constructor(context: Context,
     // camera
     private fun getScaledBitmap(selectedImg: Uri): Bitmap {
         val options = BitmapFactory.Options().apply {
-            inSampleSize = 3
+            inSampleSize = 2
         }
 
         val fileDescriptor: AssetFileDescriptor? =

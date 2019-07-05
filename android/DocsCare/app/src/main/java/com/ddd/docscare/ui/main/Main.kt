@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.ddd.docscare.R
 import com.ddd.docscare.base.BaseRecyclerAdapter
+import com.ddd.docscare.base.PP
 import com.ddd.docscare.common.DEFAULT_FOLDER_LIST
 import com.ddd.docscare.common.DOCS_FOLDER_PATH
 import com.ddd.docscare.db.dto.FolderItemDTO
@@ -24,13 +25,19 @@ import com.ddd.docscare.ui.common.ActivityResultObservableActivity
 import com.ddd.docscare.ui.common.SpacesItemDecoration
 import com.ddd.docscare.ui.folder.FolderFragment
 import com.ddd.docscare.ui.folder.FolderViewModel
+import com.ddd.docscare.ui.login.LoginActivity
+import com.ddd.docscare.ui.result.ResultDialogFragment
 import com.ddd.docscare.util.AndroidExtensionsViewHolder
 import com.ddd.docscare.util.onRightDrawableClicked
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
+import com.kakao.usermgmt.UserManagement
+import com.kakao.usermgmt.callback.LogoutResponseCallback
+import com.nhn.android.naverlogin.OAuthLogin
 import kotlinx.android.synthetic.main.activity_recently_used_header_item.view.*
 import kotlinx.android.synthetic.main.activity_recently_used_item.view.*
 import kotlinx.android.synthetic.main.main.*
+import kotlinx.android.synthetic.main.main_toolbar.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.lang.Exception
@@ -112,6 +119,21 @@ class Main : ActivityResultObservableActivity() {
 
         setScrollEvent()
         loadRecentlyViewedItem()
+
+        toolbar.setOnClickListener {
+            // Naver Logout
+            OAuthLogin.getInstance().logout(this)
+
+            UserManagement.getInstance().requestLogout(object: LogoutResponseCallback() {
+                override fun onCompleteLogout() {
+                    //
+                }
+
+            })
+            PP.USER_ID.set("")
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
     }
 
     private fun createDefaultFolder() {

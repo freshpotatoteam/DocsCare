@@ -13,7 +13,7 @@ interface FileItemDAO {
     @Query("SELECT * FROM file_item WHERE title LIKE '%' || :value  || '%'")
     fun search(value: String): Observable<List<FileItemDTO>>
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(fileItemDTO: FileItemDTO)
 
     @Delete

@@ -32,6 +32,10 @@ class BaseApplication: MultiDexApplication() {
         if(PP.FOLDER_NUM.getInt() == -1) {
             PP.FOLDER_NUM.set(0)
         }
+
+        if(PP.FILE_NUM.getInt() == -1) {
+            PP.FILE_NUM.set(0)
+        }
     }
 
     private fun initKakao() {

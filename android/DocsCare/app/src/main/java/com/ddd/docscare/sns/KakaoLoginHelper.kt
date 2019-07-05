@@ -7,6 +7,7 @@ import com.kakao.auth.ISessionCallback
 import com.kakao.auth.Session
 import com.kakao.network.ErrorResult
 import com.kakao.usermgmt.UserManagement
+import com.kakao.usermgmt.callback.LogoutResponseCallback
 import com.kakao.usermgmt.callback.MeV2ResponseCallback
 import com.kakao.usermgmt.response.MeV2Response
 import com.kakao.util.exception.KakaoException
@@ -37,6 +38,15 @@ class KakaoLoginHelper(private val activity: Activity,
 
     fun removeCallback() {
         Session.getCurrentSession().removeCallback(sessionCallback)
+    }
+
+    fun logout() {
+        UserManagement.getInstance().requestLogout(object: LogoutResponseCallback() {
+            override fun onCompleteLogout() {
+                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+        })
     }
 
     private fun requestMe() {

@@ -23,7 +23,7 @@ var DEFAULT_FOLDER_LIST = listOf(
 
 )
 
-val CATEGORY_MAP = mapOf(
+var CATEGORY_MAP = hashMapOf(
     "C1" to  "커리어",
     "C2" to  "학업",
     "C3" to  "공문서",

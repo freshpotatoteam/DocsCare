@@ -18,5 +18,17 @@ var DEFAULT_FOLDER_LIST = listOf(
     Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/OfficialDocs", "공문서", R.drawable.officialdocs),
     Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/Economy", "금융", R.drawable.economy),
     Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/Travel", "여행", R.drawable.travel),
-    Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/RealEstate", "부동산", R.drawable.realestate)
+    Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/RealEstate", "부동산", R.drawable.realestate),
+    Triple("${Environment.getExternalStorageDirectory().path}/DocsCare/Default", "미분류", R.drawable.pill)
+
+)
+
+val CATEGORY_MAP = mapOf(
+    "C1" to  "커리어",
+    "C2" to  "학업",
+    "C3" to  "공문서",
+    "C4" to  "금융",
+    "C5" to  "여행",
+    "C6" to  "부동산",
+    "C7" to  "미분류"
 )

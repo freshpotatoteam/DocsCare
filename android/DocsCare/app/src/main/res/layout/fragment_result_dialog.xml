@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/category_image"
+        android:layout_width="18dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_paper"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="48dp"/>
+
+
+    <ImageView
+        android:id="@+id/ivTextClear"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:srcCompat="@drawable/ic_clear"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="29dp"
+        android:layout_marginRight="48dp"/>
+    
+    <View
+        android:id="@+id/horizontalLine"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toBottomOf="@+id/ivTextClear"
+        app:layout_constraintLeft_toRightOf="@+id/category_image"
+        app:layout_constraintRight_toRightOf="@+id/ivTextClear"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="16dp"
+        android:background="#d1d1d1"/>
+
+    <EditText
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/horizontalLine"
+        app:layout_constraintLeft_toRightOf="@+id/category_image"
+        app:layout_constraintRight_toLeftOf="@+id/ivTextClear"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="1dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:textCursorDrawable="@drawable/edittext_cursor_drawable"
+        android:background="@color/transparent"
+        android:textSize="16sp"
+        android:textColor="#9b9b9b"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium"
+        tools:text="DocsCare_2019.07.01"/>
+
+    <TextView
+        android:id="@+id/des1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/horizontalLine"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="56dp"
+        android:layout_marginLeft="89dp"
+        android:layout_marginRight="87dp"
+        android:text="자동분류 성공!"
+        android:textSize="24sp"
+        android:textColor="#31c7a6"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium" />
+
+    <TextView
+        android:id="@+id/des2"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginRight="74dp"
+        android:fontFamily="@font/noto_sans_cjk_kr_light"
+        android:text="아래의 카테고리로 분류해드렸어요!"
+        android:textColor="#9b9b9b"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/des1" />
+
+    <View
+        android:id="@+id/categorySwipeView"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/des2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginRight="56dp"
+        android:background="#50e3c2" />
+
+    <Button
+        android:id="@+id/btnShare"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toBottomOf="@+id/categorySwipeView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/btnGoHome"
+        android:layout_marginTop="56dp"
+        android:drawableLeft="@drawable/ic_upload"
+        android:drawableTint="#5b5b5b"
+        android:paddingLeft="49dp"
+        android:paddingRight="49dp"
+        android:background="#efefef"
+        android:textColor="#5b5b5b"
+        android:textSize="14sp"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium"
+        android:text="공유"/>
+
+    <Button
+        android:id="@+id/btnGoHome"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toBottomOf="@+id/categorySwipeView"
+        app:layout_constraintLeft_toRightOf="@+id/btnShare"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="56dp"
+        android:drawableLeft="@drawable/ic_home"
+        android:drawableTint="@color/white"
+        android:paddingLeft="49dp"
+        android:paddingRight="49dp"
+        android:background="#ff8e8e"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:fontFamily="@font/noto_sans_cjk_kr_medium"
+        android:text="홈으로"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

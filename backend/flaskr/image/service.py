@@ -136,7 +136,7 @@ def process_pdf(path=None):
 
         os.remove(TEMP_IMAGE_PATH)
         print('{}st image Recongizeing...'.format(index + 1))
-        rec_string += image_to_string(cao, lang='eng+kor') + '\n'
+        rec_string += image_to_string(cao, lang='kor') + '\n'
 
     return rec_string
 
